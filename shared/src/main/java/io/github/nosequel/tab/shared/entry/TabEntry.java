@@ -14,5 +14,4 @@ public class TabEntry {
     private final String text;
     private final int ping;
 
-    private String[] skinData = new String[]{"", ""};
 }
