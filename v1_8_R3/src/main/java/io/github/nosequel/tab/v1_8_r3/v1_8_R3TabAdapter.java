@@ -72,8 +72,18 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         entityPlayer.listName = new ChatComponentText(text);
 
         if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
-            System.out.println("changing skin signature and value"); // debug
+            boolean shouldUpdate = false;
+
+            if(profile.getProperties().containsKey("textures") && profile.getProperties().get("textures") instanceof Property) {
+                final Property property = (Property) profile.getProperties().get("textures");
+                shouldUpdate = property.getSignature().equals(skinData[1]) || property.getValue().equals(skinData[1]);
+            }
+
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
+            if(shouldUpdate) {
+                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+            }
         }
 
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
