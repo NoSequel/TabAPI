@@ -86,8 +86,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter addFakePlayers(Player player) {
         if(!initialized.contains(player)) {
-            this.hidden.put(player, new ArrayList<>());
-
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
