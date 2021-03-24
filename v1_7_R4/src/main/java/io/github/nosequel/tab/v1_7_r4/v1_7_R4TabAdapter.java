@@ -70,8 +70,19 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         entityPlayer.ping = ping;
         entityPlayer.listName = text;
 
-        if(skinData.length >= 2 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
+        if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
+            boolean shouldUpdate = false;
+
+            if(profile.getProperties().containsKey("textures") && profile.getProperties().get("textures") instanceof Property) {
+                final Property property = (Property) profile.getProperties().get("textures");
+                shouldUpdate = property.getSignature().equals(skinData[1]) || property.getValue().equals(skinData[1]);
+            }
+
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
+            if(shouldUpdate) {
+                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
+            }
         }
 
         this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
