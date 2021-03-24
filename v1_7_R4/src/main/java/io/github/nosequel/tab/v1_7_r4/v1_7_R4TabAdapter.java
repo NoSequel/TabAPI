@@ -3,17 +3,28 @@ package io.github.nosequel.tab.v1_7_r4;
 import io.github.nosequel.tab.shared.TabAdapter;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.MinecraftServer;
+import net.minecraft.server.v1_7_R4.NetworkManager;
 import net.minecraft.server.v1_7_R4.Packet;
+import net.minecraft.server.v1_7_R4.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_7_R4.PlayerConnection;
 import net.minecraft.server.v1_7_R4.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
+import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
+import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
+import net.minecraft.util.io.netty.channel.ChannelPipeline;
+import net.minecraft.util.io.netty.channel.ChannelPromise;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.Arrays;
 import java.util.List;
+import java.util.Objects;
+import java.util.Queue;
 import java.util.UUID;
 
 public class v1_7_R4TabAdapter extends TabAdapter {
@@ -136,13 +147,68 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter showRealPlayers(Player player) {
-        for (Player target : Bukkit.matchPlayer("")) {
-            if(player.canSee(target) || player.equals(target)) {
-                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(((CraftPlayer) target).getHandle()));
+        if(!this.initialized.contains(player)) {
+            final PlayerConnection connection = this.getPlayerConnection(player);
+            final NetworkManager networkManager = connection.networkManager;
+
+            try {
+                final Queue<?> outgoingQueue = (Queue<?>) networkManager.getClass().getDeclaredField("k").get(networkManager);
+
+                outgoingQueue.removeIf(object ->
+                        Objects.nonNull(object) &&
+                                object instanceof PacketPlayOutNamedEntitySpawn &&
+                                this.handlePacketPlayOutNamedEntitySpawn(player, (PacketPlayOutNamedEntitySpawn) object)
+                );
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
             }
         }
 
         return this;
+    }
+
+    /**
+     * Handle an {@link PacketPlayOutNamedEntitySpawn} packet
+     *
+     * @param player the player to handle it for
+     * @param packet the packet to handle
+     * @return always true
+     */
+    private boolean handlePacketPlayOutNamedEntitySpawn(Player player, PacketPlayOutNamedEntitySpawn packet) {
+        try {
+            final Field uuidField = packet.getClass().getDeclaredField("b");
+            uuidField.setAccessible(true);
+
+            final Player target = Bukkit.getPlayer((UUID) uuidField.get(packet));
+
+            if (target != null) {
+                sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(getEntityPlayer(player)));
+            }
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
+
+        return true;
+    }
+
+    /**
+     * Get the {@link PlayerConnection} of a player
+     *
+     * @param player the player to get the player connection object from
+     * @return the object
+     */
+    private PlayerConnection getPlayerConnection(Player player) {
+        return this.getEntityPlayer(player).playerConnection;
+    }
+
+    /**
+     * Get the {@link EntityPlayer} object of a player
+     *
+     * @param player the player to get the entity player object from
+     * @return the entity player
+     */
+    private EntityPlayer getEntityPlayer(Player player) {
+        return ((CraftPlayer) player).getHandle();
     }
 
     /**

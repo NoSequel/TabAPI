@@ -12,6 +12,7 @@ import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
@@ -42,7 +43,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      * @param packet the packet to send
      */
     private void sendPacket(Player player, Packet<?> packet) {
-        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+        this.getPlayerConnection(player).sendPacket(packet);
     }
 
     /**
@@ -143,29 +144,52 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if(!this.initialized.contains(player)) {
-            ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel.pipeline().addBefore("packet_handler", player.getName(),
-                    new ChannelDuplexHandler() {
-                        @Override
-                        public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise promise) throws Exception {
-                            if (packet instanceof PacketPlayOutNamedEntitySpawn) {
-                                final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
-                                final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
-
-                                uuidField.setAccessible(true);
-
-                                final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
-
-                                if (target != null) {
-                                    sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
-                                }
-                            }
-
-                            super.write(channelHandlerContext, packet, promise);
-                        }
-                    });
+            this.getPlayerConnection(player).networkManager.channel.pipeline().addBefore(
+                    "packet_handler",
+                    player.getName(),
+                    this.createShowListener(player)
+            );
         }
 
         return this;
+    }
+
+    /**
+     * Create the listener required to show the players
+     *
+     * @param player the player to create it for
+     * @return the handler
+     */
+    private ChannelDuplexHandler createShowListener(Player player) {
+        return new ChannelDuplexHandler() {
+            @Override
+            public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise promise) throws Exception {
+                if (packet instanceof PacketPlayOutNamedEntitySpawn) {
+                    final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
+                    final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
+
+                    uuidField.setAccessible(true);
+
+                    final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
+
+                    if (target != null) {
+                        sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+                    }
+                }
+
+                super.write(channelHandlerContext, packet, promise);
+            }
+        };
+    }
+
+    /**
+     * Get the {@link PlayerConnection} of a player
+     *
+     * @param player the player to get the player connection object from
+     * @return the object
+     */
+    private PlayerConnection getPlayerConnection(Player player) {
+        return ((CraftPlayer) player).getHandle().playerConnection;
     }
 
     /**
