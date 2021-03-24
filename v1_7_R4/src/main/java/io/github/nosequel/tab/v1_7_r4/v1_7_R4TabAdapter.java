@@ -121,6 +121,22 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         for (Player target : Bukkit.matchPlayer("")) {
             if(player.canSee(target) || player.equals(target)) {
                 this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
+            }
+        }
+
+        return this;
+    }
+
+    /**
+     * Show all real players on the tab
+     *
+     * @param player the player
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter showRealPlayers(Player player) {
+        for (Player target : Bukkit.matchPlayer("")) {
+            if(player.canSee(target) || player.equals(target)) {
                 this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(((CraftPlayer) target).getHandle()));
             }
         }

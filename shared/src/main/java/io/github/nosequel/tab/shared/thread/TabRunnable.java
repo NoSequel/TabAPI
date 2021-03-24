@@ -13,7 +13,6 @@ public class TabRunnable extends BukkitRunnable {
     @Override
     public void run() {
         Bukkit.getOnlinePlayers().forEach(player -> handler.getAdapter()
-                .hideRealPlayers(player)
                 .addFakePlayers(player)
                 .handleElement(player, handler.getHandler().getElement(player)));
     }
