@@ -83,9 +83,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        if(!initialized.contains(player)) {
-            this.hideRealPlayers(player);
+        this.hideRealPlayers(player);
 
+        if(!initialized.contains(player)) {
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
@@ -93,9 +93,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
             }
 
-            this.showRealPlayers(player);
             initialized.add(player);
         }
+
+        this.showRealPlayers(player);
 
         return this;
     }
