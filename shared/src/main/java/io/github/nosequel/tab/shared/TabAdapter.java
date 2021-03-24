@@ -29,7 +29,7 @@ public abstract class TabAdapter {
      * @param element the element to send
      */
     public TabAdapter handleElement(Player player, TabElement element) {
-        for (int axis = 0; axis < 80; axis++) {
+        for (int axis = 0; axis < this.getMaxElements(player); axis++) {
             final int x = axis % 4;
             final int y = axis / 4;
 
@@ -49,12 +49,20 @@ public abstract class TabAdapter {
      * @return the current adapter instance
      */
     public TabAdapter clearTab(Player player) {
-        for (int i = 0; i < 80; i++) {
+        for (int i = 0; i < this.getMaxElements(player); i++) {
             this.sendEntryData(player, i, -1, "", new String[]{});
         }
 
         return this;
     }
+
+    /**
+     * Check if the player should be able to see the fourth row
+     *
+     * @param player the player
+     * @return whether they should be able to see the fourth row
+     */
+    public abstract int getMaxElements(Player player);
 
     /**
      * Send an entry's data to a player

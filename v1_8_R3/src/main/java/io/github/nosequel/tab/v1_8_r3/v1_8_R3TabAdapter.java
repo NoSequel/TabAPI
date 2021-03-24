@@ -34,6 +34,17 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     }
 
     /**
+     * Check if the player should be able to see the fourth row
+     *
+     * @param player the player
+     * @return whether they should be able to see the fourth row
+     */
+    @Override
+    public int getMaxElements(Player player) {
+        return 80;
+    }
+
+    /**
      * Send an entry's data to a player
      *
      * @param player   the player

@@ -33,6 +33,17 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     }
 
     /**
+     * Check if the player should be able to see the fourth row
+     *
+     * @param player the player
+     * @return whether they should be able to see the fourth row
+     */
+    @Override
+    public int getMaxElements(Player player) {
+        return ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion() > 5 ? 80 : 60;
+    }
+
+    /**
      * Send an entry's data to a player
      *
      * @param player   the player
