@@ -1,6 +1,7 @@
 package io.github.nosequel.tab.v1_7_r4;
 
 import io.github.nosequel.tab.shared.TabAdapter;
+import net.minecraft.server.v1_7_R4.ChatSerializer;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.MinecraftServer;
 import net.minecraft.server.v1_7_R4.NetworkManager;
@@ -11,9 +12,11 @@ import net.minecraft.server.v1_7_R4.PlayerConnection;
 import net.minecraft.server.v1_7_R4.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.spigotmc.ProtocolInjector;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -39,6 +42,24 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     private void sendPacket(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    /**
+     * Send the header and footer to a player
+     *
+     * @param player the player to send the header and footer to
+     * @param header the header to send
+     * @param footer the footer to send
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter sendHeaderFooter(Player player, String header, String footer) {
+        this.sendPacket(player, new ProtocolInjector.PacketTabHeader(
+                ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(header) + "\"}"),
+                ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(footer) + "\"}")
+        ));
+
+        return this;
     }
 
     /**

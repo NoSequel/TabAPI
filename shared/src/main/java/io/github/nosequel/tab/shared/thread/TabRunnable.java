@@ -1,8 +1,10 @@
 package io.github.nosequel.tab.shared.thread;
 
 import io.github.nosequel.tab.shared.TabHandler;
+import io.github.nosequel.tab.shared.entry.TabElement;
 import lombok.RequiredArgsConstructor;
 import org.bukkit.Bukkit;
+import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
 @RequiredArgsConstructor
@@ -12,8 +14,13 @@ public class TabRunnable extends BukkitRunnable {
 
     @Override
     public void run() {
-        Bukkit.getOnlinePlayers().forEach(player -> handler.getAdapter()
-                .showRealPlayers(player).addFakePlayers(player)
-                .hideRealPlayers(player).handleElement(player, handler.getHandler().getElement(player)));
+        for(Player player : Bukkit.getOnlinePlayers()) {
+            final TabElement tabElement = this.handler.getHandler().getElement(player);
+
+            this.handler.getAdapter()
+                    .showRealPlayers(player).addFakePlayers(player)
+                    .hideRealPlayers(player).handleElement(player, tabElement)
+                    .sendHeaderFooter(player, tabElement.getHeader(), tabElement.getFooter());
+        }
     }
 }

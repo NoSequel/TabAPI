@@ -11,6 +11,9 @@ public class TabElement {
 
     private final List<TabEntry> entries = new ArrayList<>();
 
+    private String header = "";
+    private String footer = "";
+
     /**
      * Get an entry by location in the tab element
      *
@@ -22,6 +25,24 @@ public class TabElement {
         return this.entries.stream()
                 .filter(entry -> entry.getX() == x && entry.getY() == y)
                 .findFirst().orElseGet(() -> new TabEntry(x, y, "", -1));
+    }
+
+    /**
+     * Set the header text to something new
+     *
+     * @param text the new header text
+     */
+    public void header(String text) {
+        this.header = header;
+    }
+
+    /**
+     * Set the footer text to something new
+     *
+     * @param text the new footer text
+     */
+    public void footer(String text) {
+        this.footer = footer;
     }
 
     /**
