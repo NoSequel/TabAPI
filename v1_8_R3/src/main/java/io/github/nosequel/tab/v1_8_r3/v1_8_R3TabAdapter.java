@@ -121,6 +121,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         for (Player target : Bukkit.getOnlinePlayers()) {
             if(player.canSee(target) || player.equals(target)) {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+            } else {
+                player.showPlayer(target);
             }
         }
 
