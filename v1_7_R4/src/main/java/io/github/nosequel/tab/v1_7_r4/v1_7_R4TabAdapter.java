@@ -12,14 +12,11 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
-import java.util.ArrayList;
-import java.util.List;
 import java.util.UUID;
 
 public class v1_7_R4TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
-    private final List<Player> added = new ArrayList<>();
 
     public v1_7_R4TabAdapter() {
         this.setupProfiles();
@@ -68,8 +65,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
-        this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
+        this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
 
         return this;
     }
@@ -97,27 +93,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.matchPlayer("")) {
             this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
-        }
-
-        return this;
-    }
-
-    /**
-     * Add all the fake players to the player's world
-     *
-     * @param player the player
-     * @return the current adapter instance
-     */
-    @Override
-    public TabAdapter addFakePlayers(Player player) {
-        if(!this.added.contains(player)) {
-            for (int i = 0; i < this.getMaxElements(player); i++) {
-                final EntityPlayer entityPlayer = this.getEntityPlayer(this.profiles[i]);
-
-                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
-            }
-
-            this.added.add(player);
         }
 
         return this;
