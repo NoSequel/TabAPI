@@ -5,9 +5,6 @@
 # Support
 We currently support 2 NMS versions, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
 
-# Known Issues
-- Player skins get set to Steve or Alex
-
 # Usage
 The usage is very easy - here's an example:
 
