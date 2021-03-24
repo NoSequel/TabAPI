@@ -70,6 +70,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
 
         this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
+        this.showRealPlayers(player);
 
         return this;
     }

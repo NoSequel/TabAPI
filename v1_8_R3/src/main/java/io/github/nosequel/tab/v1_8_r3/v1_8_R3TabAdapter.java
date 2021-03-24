@@ -71,6 +71,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
+        this.showRealPlayers(player);
 
         return this;
     }
@@ -83,8 +84,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        this.hideRealPlayers(player);
-
         if(!initialized.contains(player)) {
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
@@ -95,8 +94,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
             initialized.add(player);
         }
-
-        this.showRealPlayers(player);
 
         return this;
     }
