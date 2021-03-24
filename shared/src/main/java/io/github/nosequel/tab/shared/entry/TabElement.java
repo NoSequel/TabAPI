@@ -33,7 +33,7 @@ public class TabElement {
      * @param text the new header text
      */
     public void header(String text) {
-        this.header = header;
+        this.header = text;
     }
 
     /**
@@ -42,7 +42,7 @@ public class TabElement {
      * @param text the new footer text
      */
     public void footer(String text) {
-        this.footer = footer;
+        this.footer = text;
     }
 
     /**
