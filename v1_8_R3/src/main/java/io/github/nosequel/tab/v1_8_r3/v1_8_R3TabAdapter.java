@@ -120,10 +120,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.getOnlinePlayers()) {
             if(player.canSee(target) || player.equals(target)) {
-                System.out.println("hiding");
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
-            } else {
-                System.out.println("showing");
                 player.showPlayer(target);
             }
         }
