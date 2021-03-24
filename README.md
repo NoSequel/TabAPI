@@ -1,5 +1,6 @@
-# Tab API
-TabAPI is an opensource tablist api I made for the spigot API. 
+<img src="https://i.imgur.com/ek4yBRU.png" width="50%" align="right">
+<h1 align="center">Tab API</h1>
+<p align="center">is an opensource tablist API made for the Spigot API.</p><br>
 
 # Support
 We currently support 2 NMS versions, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
