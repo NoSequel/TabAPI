@@ -78,7 +78,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
                 shouldUpdate = !property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0]);
             }
 
-
             if(shouldUpdate) {
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
                 this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
