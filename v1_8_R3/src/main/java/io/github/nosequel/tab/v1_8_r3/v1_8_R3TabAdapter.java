@@ -149,7 +149,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                         public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise promise) throws Exception {
                             if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                                 final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
-                                final Field uuidField = entitySpawn.getClass().getDeclaredField("uuid");
+                                final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
 
                                 uuidField.setAccessible(true);
 
