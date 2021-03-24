@@ -26,12 +26,33 @@ public class TabElement {
     /**
      * Add a new entry to the element
      *
+     * @param index the index to get the axiss from
+     * @param text  the text to display on the slot
+     */
+    public void add(int index, String text) {
+        this.add(index, text, -1);
+    }
+
+    /**
+     * Add a new entry to the element
+     *
      * @param x    the x axis
      * @param y    the y axis
      * @param text the text to display on the slot
      */
     public void add(int x, int y, String text) {
         this.add(x, y, text, -1);
+    }
+
+    /**
+     * Add a new entry to the element
+     *
+     * @param index the index to get the axiss from
+     * @param text  the text to display on the slot
+     * @param ping  the ping to display
+     */
+    public void add(int index, String text, int ping) {
+        this.add(index % 4, index / 4, text, ping);
     }
 
     /**
