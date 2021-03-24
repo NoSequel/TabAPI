@@ -81,6 +81,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                 shouldUpdate = true;
             }
 
+            System.out.println(shouldUpdate + " " + text);
+
             if(shouldUpdate) {
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
