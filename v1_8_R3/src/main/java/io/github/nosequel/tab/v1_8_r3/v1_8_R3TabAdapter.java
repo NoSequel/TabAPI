@@ -14,12 +14,16 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
+
+    private final Map<Player, List<Player>> hidden = new HashMap<>();
     private final List<Player> initialized = new ArrayList<>();
 
     public v1_8_R3TabAdapter() {
@@ -84,6 +88,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter addFakePlayers(Player player) {
         if(!initialized.contains(player)) {
+            this.hidden.put(player, new ArrayList<>());
+
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
@@ -119,8 +125,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.getOnlinePlayers()) {
-            if(player.canSee(target) || player.equals(target)) {
+            if((player.canSee(target) || player.equals(target)) && !this.hidden.get(player).contains(target)) {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+                this.hidden.get(player).add(target);
             }
         }
 
