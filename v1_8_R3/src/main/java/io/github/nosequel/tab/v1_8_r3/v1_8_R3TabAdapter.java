@@ -12,20 +12,21 @@ import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
+import org.bukkit.plugin.java.JavaPlugin;
 
 import java.util.ArrayList;
-import java.util.HashMap;
 import java.util.List;
-import java.util.Map;
 import java.util.UUID;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
     private final List<Player> initialized = new ArrayList<>();
+    private final JavaPlugin plugin;
 
-    public v1_8_R3TabAdapter() {
+    public v1_8_R3TabAdapter(JavaPlugin plugin) {
         this.setupProfiles();
+        this.plugin = plugin;
     }
 
     /**
@@ -121,10 +122,11 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.getOnlinePlayers()) {
-            if((player.canSee(target) || player.equals(target))) {
+            if ((player.canSee(target) || player.equals(target))) {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
-                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+
+                Bukkit.getScheduler().runTaskLater(this.plugin, () -> this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target), 2L);
             }
         }
 
