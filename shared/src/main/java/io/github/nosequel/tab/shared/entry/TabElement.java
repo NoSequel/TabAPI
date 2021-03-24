@@ -1,5 +1,6 @@
 package io.github.nosequel.tab.shared.entry;
 
+import io.github.nosequel.tab.shared.skin.SkinType;
 import lombok.Getter;
 
 import java.util.ArrayList;
@@ -66,4 +67,55 @@ public class TabElement {
     public void add(int x, int y, String text, int ping) {
         this.entries.add(new TabEntry(x, y, text, ping));
     }
+
+    /**
+     * Add a new entry to the element
+     *
+     * @param index the index to get the axiss from
+     * @param text     the text to display on the slot
+     * @param ping     the ping to display
+     * @param skinData the data to display in the skin slot
+     */
+    public void add(int index, String text, int ping, String[] skinData) {
+        this.add(index % 4, index / 4, text, ping, skinData);
+    }
+
+    /**
+     * Add a new entry to the element
+     *
+     * @param x        the x axis
+     * @param y        the y axis
+     * @param text     the text to display on the slot
+     * @param ping     the ping to display
+     * @param skinData the data to display in the skin slot
+     */
+    public void add(int x, int y, String text, int ping, String[] skinData) {
+        this.entries.add(new TabEntry(x, y, text, ping, skinData));
+    }
+
+    /**
+     * Add a new entry to the element
+     *
+     * @param index the index to get the axiss from
+     * @param text     the text to display on the slot
+     * @param ping     the ping to display
+     * @param skinType the data to display in the skin slot
+     */
+    public void add(int index, String text, int ping, SkinType skinType) {
+        this.add(index, text, ping, skinType.getSkinData());
+    }
+
+    /**
+     * Add a new entry to the element
+     *
+     * @param x        the x axis
+     * @param y        the y axis
+     * @param text     the text to display on the slot
+     * @param ping     the ping to display
+     * @param skinType the data to display in the skin slot
+     */
+    public void add(int x, int y, String text, int ping, SkinType skinType) {
+        this.add(x, y, text, ping, skinType.getSkinData());
+    }
+
 }
