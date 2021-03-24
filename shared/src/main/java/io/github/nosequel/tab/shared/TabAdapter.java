@@ -35,7 +35,7 @@ public abstract class TabAdapter {
 
             final TabEntry entry = element.getEntry(x, y);
 
-            this.sendEntryData(player, axis, entry.getPing(), entry.getText(), new String[]{});
+            this.sendEntryData(player, axis, entry.getPing(), entry.getText(), entry.getSkinData());
         }
 
         return this;
