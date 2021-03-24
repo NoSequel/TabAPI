@@ -152,9 +152,10 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final NetworkManager networkManager = connection.networkManager;
 
             try {
-                final Queue<?> outgoingQueue = (Queue<?>) networkManager.getClass().getDeclaredField("k").get(networkManager);
+                final Field outgoingQueueField = networkManager.getClass().getDeclaredField("k");
+                outgoingQueueField.setAccessible(true);
 
-                outgoingQueue.removeIf(object ->
+                ((Queue<?>) outgoingQueueField.get(networkManager)).removeIf(object ->
                         Objects.nonNull(object) &&
                                 object instanceof PacketPlayOutNamedEntitySpawn &&
                                 this.handlePacketPlayOutNamedEntitySpawn(player, (PacketPlayOutNamedEntitySpawn) object)
