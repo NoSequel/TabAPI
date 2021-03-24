@@ -176,10 +176,10 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     private boolean handlePacketPlayOutNamedEntitySpawn(Player player, PacketPlayOutNamedEntitySpawn packet) {
         try {
-            final Field uuidField = packet.getClass().getDeclaredField("b");
-            uuidField.setAccessible(true);
+            final Field gameProfileField = packet.getClass().getDeclaredField("b");
+            gameProfileField.setAccessible(true);
 
-            final Player target = Bukkit.getPlayer((UUID) uuidField.get(packet));
+            final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
             if (target != null) {
                 sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(getEntityPlayer(player)));
