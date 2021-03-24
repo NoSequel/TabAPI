@@ -90,10 +90,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         final List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
 
         if(!initialized.contains(player)) {
-            for(Player target : onlinePlayers) {
-                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
-            }
-
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
@@ -103,6 +99,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
             for(Player target : onlinePlayers) {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+            }
+
+            for(Player target : onlinePlayers) {
+                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
             }
 
             initialized.add(player);
