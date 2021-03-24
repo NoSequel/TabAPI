@@ -66,7 +66,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        //this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         //this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
