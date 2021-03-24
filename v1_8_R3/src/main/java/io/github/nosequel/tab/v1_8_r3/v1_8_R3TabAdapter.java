@@ -22,7 +22,6 @@ import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
-import java.util.stream.Collectors;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
@@ -76,7 +75,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             final Property property = profile.getProperties().get("textures").iterator().next();
 
             if(!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
+                profile.getProperties().remove("textures", property);
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
             }
         }

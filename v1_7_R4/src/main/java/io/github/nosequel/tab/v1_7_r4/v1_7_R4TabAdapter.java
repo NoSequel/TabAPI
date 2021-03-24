@@ -74,7 +74,9 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final Property property = profile.getProperties().get("textures").iterator().next();
 
             if(!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
+                profile.getProperties().remove("textures", property);
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
                 this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
             }
         }
