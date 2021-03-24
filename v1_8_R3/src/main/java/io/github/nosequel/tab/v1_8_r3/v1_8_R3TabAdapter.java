@@ -62,11 +62,30 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         entityPlayer.ping = ping;
         entityPlayer.listName = new ChatComponentText(text);
 
-        if(skinData.length >= 2 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
+        if (skinData.length >= 2 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        this.sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
+
+        return this;
+    }
+
+    /**
+     * Add fake players to the player's tablist
+     *
+     * @param player the player to send the fake players to
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter addFakePlayers(Player player) {
+        for(int i = 0; i < 80; i++) {
+            final GameProfile profile = this.profiles[i];
+            final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+
+            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+        }
 
         return this;
     }
@@ -93,13 +112,32 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.getOnlinePlayers()) {
-            this.sendPacket(player, new PacketPlayOutPlayerInfo(
-                    PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
-                    ((CraftPlayer) target).getHandle()
-            ));
+            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
         }
 
         return this;
+    }
+
+    /**
+     * Send the {@link PacketPlayOutPlayerInfo} to a player
+     *
+     * @param player the player
+     * @param action the action
+     * @param target the target
+     */
+    private void sendInfoPacket(Player player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction action, EntityPlayer target) {
+        this.sendPacket(player, new PacketPlayOutPlayerInfo(action, target));
+    }
+
+    /**
+     * Send the {@link PacketPlayOutPlayerInfo} to a player
+     *
+     * @param player the player
+     * @param action the action
+     * @param target the target
+     */
+    private void sendInfoPacket(Player player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction action, Player target) {
+        this.sendInfoPacket(player, action, ((CraftPlayer) target).getHandle());
     }
 
     /**

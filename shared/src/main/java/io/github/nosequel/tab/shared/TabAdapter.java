@@ -77,6 +77,14 @@ public abstract class TabAdapter {
     public abstract TabAdapter sendEntryData(Player player, int axis, int ping, String text, String[] skinData);
 
     /**
+     * Add fake players to the player's tablist
+     *
+     * @param player the player to send the fake players to
+     * @return the current adapter instance
+     */
+    public abstract TabAdapter addFakePlayers(Player player);
+
+    /**
      * Hide all real players from the tab
      *
      * @param player the player
