@@ -11,17 +11,12 @@ import net.minecraft.server.v1_7_R4.PlayerConnection;
 import net.minecraft.server.v1_7_R4.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
-import net.minecraft.util.io.netty.channel.ChannelDuplexHandler;
-import net.minecraft.util.io.netty.channel.ChannelHandlerContext;
-import net.minecraft.util.io.netty.channel.ChannelPipeline;
-import net.minecraft.util.io.netty.channel.ChannelPromise;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
-import java.util.Arrays;
 import java.util.List;
 import java.util.Objects;
 import java.util.Queue;
@@ -81,7 +76,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
 
         this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
-        this.showRealPlayers(player);
 
         return this;
     }
