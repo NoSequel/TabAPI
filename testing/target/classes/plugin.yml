@@ -1,0 +1,4 @@
+name: TabTesting
+version: 1.0-SNAPSHOT
+author: NV6
+main: io.github.nosequel.tab.testing.TabTestingPlugin
