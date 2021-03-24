@@ -3,10 +3,14 @@ package io.github.nosequel.tab.v1_8_r3;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.github.nosequel.tab.shared.TabAdapter;
+import io.netty.channel.ChannelDuplexHandler;
+import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPromise;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.Packet;
+import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.bukkit.Bukkit;
@@ -14,6 +18,7 @@ import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.plugin.java.JavaPlugin;
 
+import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
@@ -87,22 +92,12 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        final List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
-
         if(!initialized.contains(player)) {
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-            }
-
-            for(Player target : onlinePlayers) {
-                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
-            }
-
-            for(Player target : onlinePlayers) {
-                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
             }
 
             initialized.add(player);
@@ -132,6 +127,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
+        for(Player target : Bukkit.getOnlinePlayers()) {
+            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+        }
+
         return this;
     }
 
@@ -143,6 +142,29 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter showRealPlayers(Player player) {
+        if(!this.initialized.contains(player)) {
+            ((CraftPlayer) player).getHandle().playerConnection.networkManager.channel.pipeline().addBefore("packet_handler", player.getName(),
+                    new ChannelDuplexHandler() {
+                        @Override
+                        public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise promise) throws Exception {
+                            if (packet instanceof PacketPlayOutNamedEntitySpawn) {
+                                final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
+                                final Field uuidField = entitySpawn.getClass().getDeclaredField("uuid");
+
+                                uuidField.setAccessible(true);
+
+                                final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
+
+                                if (target != null) {
+                                    sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+                                }
+                            }
+
+                            super.write(channelHandlerContext, packet, promise);
+                        }
+                    });
+        }
+
         return this;
     }
 
