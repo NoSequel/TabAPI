@@ -12,11 +12,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class v1_7_R4TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
+    private final List<Player> initialized = new ArrayList<>();
 
     public v1_7_R4TabAdapter() {
         this.setupProfiles();
@@ -79,11 +82,15 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        for(int i = 0; i < 80; i++) {
-            final GameProfile profile = this.profiles[i];
-            final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+        if(!this.initialized.contains(player)) {
+            for (int i = 0; i < 80; i++) {
+                final GameProfile profile = this.profiles[i];
+                final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
-            this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
+                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
+            }
+
+            this.initialized.add(player);
         }
 
         return this;
