@@ -119,7 +119,9 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     @Override
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.matchPlayer("")) {
-            this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
+            if(player.canSee(target) || player.equals(target)) {
+                this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
+            }
         }
 
         return this;
