@@ -71,7 +71,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
-        this.showRealPlayers(player);
 
         return this;
     }
