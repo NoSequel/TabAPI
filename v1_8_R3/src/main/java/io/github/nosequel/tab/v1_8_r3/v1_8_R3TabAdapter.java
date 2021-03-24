@@ -73,18 +73,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         entityPlayer.listName = new ChatComponentText(text);
 
         if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
-            boolean shouldUpdate;
+            final Property property = profile.getProperties().get("textures").iterator().next();
 
-            if(profile.getProperties().containsKey("textures") && new ArrayList<>(profile.getProperties().get("textures")).get(0) != null) {
-                final Property property = (Property) profile.getProperties().get("textures");
-                shouldUpdate = !property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0]);
-            } else {
-                shouldUpdate = true;
-            }
-
-            System.out.println(shouldUpdate + " " + text);
-
-            if(shouldUpdate) {
+            if(!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
             }
