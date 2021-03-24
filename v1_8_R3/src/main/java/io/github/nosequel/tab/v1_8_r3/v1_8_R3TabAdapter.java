@@ -137,7 +137,11 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public TabAdapter showRealPlayers(Player player) {
         for (Player target : Bukkit.getOnlinePlayers()) {
             if(player.canSee(target) || player.equals(target)) {
-                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+                player.showPlayer(target);
+            }
+
+            if(target.canSee(player) || target.equals(player)) {
+                target.showPlayer(player);
             }
         }
 
