@@ -17,6 +17,7 @@ import org.bukkit.plugin.java.JavaPlugin;
 import java.util.ArrayList;
 import java.util.List;
 import java.util.UUID;
+import java.util.stream.Collectors;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
@@ -86,12 +87,22 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
+        final List<Player> onlinePlayers = new ArrayList<>(Bukkit.getOnlinePlayers());
+
         if(!initialized.contains(player)) {
+            for(Player target : onlinePlayers) {
+                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+            }
+
             for (int i = 0; i < 80; i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+            }
+
+            for(Player target : onlinePlayers) {
+                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
             }
 
             initialized.add(player);
@@ -121,11 +132,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
-        }
-
         return this;
     }
 
