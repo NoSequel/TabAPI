@@ -73,7 +73,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
             boolean shouldUpdate = false;
 
-            if(profile.getProperties().containsKey("textures") && profile.getProperties().get("textures") instanceof Property) {
+            if(profile.getProperties().containsKey("textures") && new ArrayList<>(profile.getProperties().get("textures")).get(0) != null) {
                 final Property property = (Property) profile.getProperties().get("textures");
                 shouldUpdate = !property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0]);
             }
