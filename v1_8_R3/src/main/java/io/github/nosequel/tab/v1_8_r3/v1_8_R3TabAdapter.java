@@ -13,11 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
+    private final List<Player> added = new ArrayList<>();
 
     public v1_8_R3TabAdapter() {
         this.setupProfiles();
@@ -56,11 +59,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter sendEntryData(Player player, int axis, int ping, String text, String[] skinData) {
-        final GameProfile profile = profiles[axis];
-        final MinecraftServer server = MinecraftServer.getServer();
-        final PlayerInteractManager interactManager = new PlayerInteractManager(server.getWorldServer(0));
-
-        final EntityPlayer entityPlayer = new EntityPlayer(server, server.getWorldServer(0), profile, interactManager);
+        final GameProfile profile = this.profiles[axis];
+        final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
         entityPlayer.ping = ping;
         entityPlayer.listName = new ChatComponentText(text);
@@ -69,9 +69,23 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        this.sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
+        this.sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer));
+        this.sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer));
 
         return this;
+    }
+
+    /**
+     * Get an entity player by a profile
+     *
+     * @param profile the profile
+     * @return the entity player
+     */
+    private EntityPlayer getEntityPlayer(GameProfile profile) {
+        final MinecraftServer server = MinecraftServer.getServer();
+        final PlayerInteractManager interactManager = new PlayerInteractManager(server.getWorldServer(0));
+
+        return new EntityPlayer(server, server.getWorldServer(0), profile, interactManager);
     }
 
     /**
@@ -87,6 +101,27 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                     PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER,
                     ((CraftPlayer) target).getHandle()
             ));
+        }
+
+        return this;
+    }
+
+    /**
+     * Add all the fake players to the player's world
+     *
+     * @param player the player
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter addFakePlayers(Player player) {
+        if(!this.added.contains(player)) {
+            for (int i = 0; i < this.getMaxElements(player); i++) {
+                final EntityPlayer entityPlayer = this.getEntityPlayer(this.profiles[i]);
+
+                this.sendPacket(player, new PacketPlayOutPlayerInfo(PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer));
+            }
+
+            this.added.add(player);
         }
 
         return this;

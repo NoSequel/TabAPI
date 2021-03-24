@@ -85,6 +85,14 @@ public abstract class TabAdapter {
     public abstract TabAdapter hideRealPlayers(Player player);
 
     /**
+     * Add all the fake players to the player's world
+     *
+     * @param player the player
+     * @return the current adapter instance
+     */
+    public abstract TabAdapter addFakePlayers(Player player);
+
+    /**
      * Create a new game profile
      *
      * @param index the index of the profile
