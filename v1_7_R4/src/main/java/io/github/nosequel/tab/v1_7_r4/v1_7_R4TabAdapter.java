@@ -65,10 +65,30 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
+        this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
+        this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
         return this;
     }
+
+    /**
+     * Add fake players to the player's tablist
+     *
+     * @param player the player to send the fake players to
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter addFakePlayers(Player player) {
+        for(int i = 0; i < 80; i++) {
+            final GameProfile profile = this.profiles[i];
+            final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+
+            this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
+        }
+
+        return this;
+    }
+
 
     /**
      * Get an entity player by a profile
