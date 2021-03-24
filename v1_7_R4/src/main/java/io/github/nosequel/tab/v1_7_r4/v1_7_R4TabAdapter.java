@@ -75,12 +75,12 @@ public class v1_7_R4TabAdapter extends TabAdapter {
 
             if(profile.getProperties().containsKey("textures") && profile.getProperties().get("textures") instanceof Property) {
                 final Property property = (Property) profile.getProperties().get("textures");
-                shouldUpdate = property.getSignature().equals(skinData[1]) || property.getValue().equals(skinData[1]);
+                shouldUpdate = !property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0]);
             }
 
-            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
             if(shouldUpdate) {
+                profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
                 this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
             }
         }
