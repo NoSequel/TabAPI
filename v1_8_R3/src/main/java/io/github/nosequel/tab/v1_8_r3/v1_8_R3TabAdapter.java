@@ -63,7 +63,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             final Field footerField = packet.getClass().getDeclaredField("b");
 
             footerField.setAccessible(true);
-            footerField.set(packet, footer);
+            footerField.set(packet, IChatBaseComponent.ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(footer) + "\"}"));
         } catch (IllegalAccessException | NoSuchFieldException e) {
             e.printStackTrace();
         }
