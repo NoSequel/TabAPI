@@ -93,6 +93,14 @@ public abstract class TabAdapter {
     public abstract TabAdapter hideRealPlayers(Player player);
 
     /**
+     * Show all real players on the tab
+     *
+     * @param player the player
+     * @return the current adapter instance
+     */
+    public abstract TabAdapter showRealPlayers(Player player);
+
+    /**
      * Create a new game profile
      *
      * @param index the index of the profile
