@@ -79,6 +79,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                 shouldUpdate = !property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0]);
             }
 
+            System.out.println(shouldUpdate + " " + text);
 
             if(shouldUpdate) {
                 profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
