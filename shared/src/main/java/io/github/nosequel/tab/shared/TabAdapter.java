@@ -56,6 +56,17 @@ public abstract class TabAdapter {
         return this;
     }
 
+
+    /**
+     * Send the header and footer to a player
+     *
+     * @param player the player to send the header and footer to
+     * @param header the header to send
+     * @param footer the footer to send
+     * @return the current adapter instance
+     */
+    public abstract TabAdapter sendHeaderFooter(Player player, String header, String footer);
+
     /**
      * Check if the player should be able to see the fourth row
      *

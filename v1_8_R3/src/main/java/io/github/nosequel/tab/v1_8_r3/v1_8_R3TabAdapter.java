@@ -8,12 +8,15 @@ import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
 import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
+import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
 import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
+import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
@@ -41,6 +44,35 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     private void sendPacket(Player player, Packet<?> packet) {
         this.getPlayerConnection(player).sendPacket(packet);
     }
+
+    /**
+     * Send the header and footer to a player
+     *
+     * @param player the player to send the header and footer to
+     * @param header the header to send
+     * @param footer the footer to send
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter sendHeaderFooter(Player player, String header, String footer) {
+        final Packet<?> packet = new PacketPlayOutPlayerListHeaderFooter(
+                IChatBaseComponent.ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(header) + "\"}")
+        );
+
+        try {
+            final Field footerField = packet.getClass().getDeclaredField("b");
+
+            footerField.setAccessible(true);
+            footerField.set(packet, footer);
+        } catch (IllegalAccessException | NoSuchFieldException e) {
+            e.printStackTrace();
+        }
+
+        this.sendPacket(player, packet);
+
+        return this;
+    }
+
 
     /**
      * Check if the player should be able to see the fourth row
