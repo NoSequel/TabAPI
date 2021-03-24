@@ -13,11 +13,14 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.util.ArrayList;
+import java.util.List;
 import java.util.UUID;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
     private final GameProfile[] profiles = new GameProfile[80];
+    private List<Player> initialized = new ArrayList<>();
 
     public v1_8_R3TabAdapter() {
         this.setupProfiles();
@@ -66,8 +69,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
         }
 
-        //this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
-        //this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
     }
@@ -80,11 +83,15 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        for(int i = 0; i < 80; i++) {
-            final GameProfile profile = this.profiles[i];
-            final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+        if(!initialized.contains(player)) {
+            for (int i = 0; i < 80; i++) {
+                final GameProfile profile = this.profiles[i];
+                final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+                this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+            }
+
+            initialized.add(player);
         }
 
         return this;
