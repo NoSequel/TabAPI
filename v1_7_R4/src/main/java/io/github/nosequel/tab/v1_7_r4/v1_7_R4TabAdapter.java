@@ -19,7 +19,6 @@ import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Score;
 import org.bukkit.scoreboard.Scoreboard;
 import org.bukkit.scoreboard.Team;
 import org.spigotmc.ProtocolInjector;
@@ -95,10 +94,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
-        entityPlayer.ping = ping;
-
-        this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
-
         if(this.getMaxElements(player) != 60) {
             entityPlayer.listName = text;
 
@@ -135,6 +130,9 @@ public class v1_7_R4TabAdapter extends TabAdapter {
 
             player.setScoreboard(scoreboard);
         }
+
+        entityPlayer.ping = ping;
+        this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
         return this;
     }
