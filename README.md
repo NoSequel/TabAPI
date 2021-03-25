@@ -6,7 +6,7 @@
 We currently support 2 NMS versions, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
 
 # Known Issues
-- There are currently no known issues, if you do encounter any problems and/or have any suggestions, feel free to open an issue on this repository.
+- Elements seem to be misaligned on 1.8 tab using v1_7_R4 NMS implementation.
 
 # Usage
 The usage is very easy - here's an example:
