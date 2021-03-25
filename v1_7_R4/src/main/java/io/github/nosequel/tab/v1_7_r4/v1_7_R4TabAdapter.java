@@ -80,16 +80,14 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     public TabAdapter handleElement(Player player, TabElement element) {
         final int rows = this.getMaxElements(player) / 20;
 
-        for (int axis = 0; axis < this.getMaxElements(player); axis++) {
-            final int x = axis % rows;
-            final int y = axis / rows;
+        for(int y = 0; y < 20; y++) {
+            for(int x = 0; x < rows; x++) {
+                final TabEntry entry = element.getEntry(x, y);
 
-            final TabEntry entry = rows == 3 ?
-                    element.getEntry(x, y) :
-                    element.getEntry(y, x);
-
-            this.sendEntryData(player, axis, entry.getPing(), entry.getText(), entry.getSkinData());
+                this.sendEntryData(player, x*y, entry.getPing(), entry.getText(), entry.getSkinData());
+            }
         }
+
 
         return this;
     }
