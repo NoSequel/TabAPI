@@ -70,28 +70,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         return this;
     }
 
-    /**
-     * Handle an element being send to a player
-     *
-     * @param player  the player
-     * @param element the element to send
-     */
-    @Override
-    public TabAdapter handleElement(Player player, TabElement element) {
-        final int rows = this.getMaxElements(player) / 20;
-
-        for(int y = 0; y < 20; y++) {
-            for(int x = 0; x < rows; x++) {
-                final TabEntry entry = element.getEntry(x, y);
-
-                this.sendEntryData(player, y*rows+x, entry.getPing(), entry.getText(), entry.getSkinData());
-            }
-        }
-
-
-        return this;
-    }
-
 
     /**
      * Check if the player should be able to see the fourth row
@@ -119,44 +97,45 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
-        if(this.getMaxElements(player) != 60) {
-            entityPlayer.listName = text;
 
-            if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
-                final Property property = profile.getProperties().get("textures").iterator().next();
+        if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
+            final Property property = profile.getProperties().get("textures").iterator().next();
 
-                if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
-                    profile.getProperties().remove("textures", property);
-                    profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+            if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
+                profile.getProperties().remove("textures", property);
+                profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
-                    this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
-                }
+                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
             }
-
-            this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
-        } else {
-            final String name = profile.getName();
-            final String[] splitText = this.splitText(text);
-
-            final Scoreboard scoreboard = player.getScoreboard() == null
-                    ? Bukkit.getScoreboardManager().getNewScoreboard()
-                    : player.getScoreboard();
-
-            final Team team = scoreboard.getTeam(name) == null
-                    ? scoreboard.registerNewTeam(name)
-                    : scoreboard.getTeam(name);
-
-            if (!team.hasEntry(name)) {
-                team.addEntry(name);
-            }
-
-            team.setPrefix(splitText[0]);
-            team.setSuffix(splitText[1]);
-
-            player.setScoreboard(scoreboard);
         }
 
+        final String name = profile.getName();
+        final String[] splitText = this.splitText(text);
+
+        final Scoreboard scoreboard = player.getScoreboard() == null
+                ? Bukkit.getScoreboardManager().getNewScoreboard()
+                : player.getScoreboard();
+
+        final Team team = scoreboard.getTeam(name) == null
+                ? scoreboard.registerNewTeam(name)
+                : scoreboard.getTeam(name);
+
+        if (!team.hasEntry(name)) {
+            team.addEntry(name);
+        }
+
+        team.setPrefix(splitText[0]);
+        team.setSuffix(splitText[1]);
+
+        player.setScoreboard(scoreboard);
+
         entityPlayer.ping = ping;
+
+        if(this.getMaxElements(player) != 60) {
+            entityPlayer.listName = text;
+            this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
+        }
+
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
         return this;
