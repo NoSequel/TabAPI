@@ -167,7 +167,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     @Override
     public TabAdapter addFakePlayers(Player player) {
         if(!this.initialized.contains(player)) {
-            for (int i = 0; i < 80; i++) {
+            for (int i = 0; i < this.getMaxElements(player); i++) {
                 final GameProfile profile = this.profiles[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
