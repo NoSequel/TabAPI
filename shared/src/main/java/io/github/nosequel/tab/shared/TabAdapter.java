@@ -29,8 +29,9 @@ public abstract class TabAdapter {
      * @param element the element to send
      */
     public TabAdapter handleElement(Player player, TabElement element) {
+        System.out.println(this.getMaxElements(player));
         for (int axis = 0; axis < this.getMaxElements(player); axis++) {
-            final int x = axis & (this.getMaxElements(player)/20-1);
+            final int x = axis % (this.getMaxElements(player)/20);
             final int y = axis / (this.getMaxElements(player)/20);
 
             final TabEntry entry = element.getEntry(x, y);
