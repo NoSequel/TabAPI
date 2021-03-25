@@ -1,6 +1,8 @@
 package io.github.nosequel.tab.v1_7_r4;
 
 import io.github.nosequel.tab.shared.TabAdapter;
+import io.github.nosequel.tab.shared.entry.TabElement;
+import io.github.nosequel.tab.shared.entry.TabEntry;
 import net.minecraft.server.v1_7_R4.ChatSerializer;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.MinecraftServer;
@@ -69,6 +71,31 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     }
 
     /**
+     * Handle an element being send to a player
+     *
+     * @param player  the player
+     * @param element the element to send
+     */
+    @Override
+    public TabAdapter handleElement(Player player, TabElement element) {
+        final int rows = this.getMaxElements(player) / 20;
+
+        for (int axis = 0; axis < this.getMaxElements(player); axis++) {
+            final int x = axis % rows;
+            final int y = axis / rows;
+
+            final TabEntry entry = rows == 3 ?
+                    element.getEntry(x, y) :
+                    element.getEntry(y, x);
+
+            this.sendEntryData(player, axis, entry.getPing(), entry.getText(), entry.getSkinData());
+        }
+
+        return this;
+    }
+
+
+    /**
      * Check if the player should be able to see the fourth row
      *
      * @param player the player
@@ -76,7 +103,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public int getMaxElements(Player player) {
-        return 60;
+        return ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion() > 5 ? 80 : 60;
     }
 
     /**
