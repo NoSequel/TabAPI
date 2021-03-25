@@ -12,7 +12,6 @@
         <module>shared</module>
         <module>v1_7_R4</module>
         <module>v1_8_R3</module>
-        <module>testingv2</module>
     </modules>
 
     <properties>
