@@ -84,7 +84,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             for(int x = 0; x < rows; x++) {
                 final TabEntry entry = element.getEntry(x, y);
 
-                this.sendEntryData(player, x*y, entry.getPing(), entry.getText(), entry.getSkinData());
+                this.sendEntryData(player, y*rows+x, entry.getPing(), entry.getText(), entry.getSkinData());
             }
         }
 
