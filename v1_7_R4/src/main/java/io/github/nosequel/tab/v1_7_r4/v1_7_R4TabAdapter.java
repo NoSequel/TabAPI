@@ -95,8 +95,11 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
+        entityPlayer.ping = ping;
+
+        this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
+
         if(this.getMaxElements(player) != 60) {
-            entityPlayer.ping = ping;
             entityPlayer.listName = text;
 
             if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
@@ -111,7 +114,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             }
 
             this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
-            this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
         } else {
             final String name = profile.getName();
             final String[] splitText = this.splitText(text);
