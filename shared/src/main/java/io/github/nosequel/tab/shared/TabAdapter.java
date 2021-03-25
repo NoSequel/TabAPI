@@ -29,14 +29,16 @@ public abstract class TabAdapter {
      * @param element the element to send
      */
     public TabAdapter handleElement(Player player, TabElement element) {
-        for (int axis = 0; axis < this.getMaxElements(player); axis++) {
-            final int x = axis % (this.getMaxElements(player)/20);
-            final int y = axis / (this.getMaxElements(player)/20);
+        final int rows = this.getMaxElements(player) / 20;
 
-            final TabEntry entry = element.getEntry(x, y);
+        for(int y = 0; y < 20; y++) {
+            for(int x = 0; x < rows; x++) {
+                final TabEntry entry = element.getEntry(x, y);
 
-            this.sendEntryData(player, axis, entry.getPing(), entry.getText(), entry.getSkinData());
+                this.sendEntryData(player, y*rows+x, entry.getPing(), entry.getText(), entry.getSkinData());
+            }
         }
+
 
         return this;
     }
