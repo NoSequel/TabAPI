@@ -30,7 +30,7 @@ public abstract class TabAdapter {
      */
     public TabAdapter handleElement(Player player, TabElement element) {
         for (int axis = 0; axis < this.getMaxElements(player); axis++) {
-            final int x = axis & (this.getMaxElements(player)/20);
+            final int x = axis & (this.getMaxElements(player)/20-1);
             final int y = axis / (this.getMaxElements(player)/20);
 
             final TabEntry entry = element.getEntry(x, y);
