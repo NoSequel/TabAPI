@@ -8,6 +8,7 @@ import net.minecraft.server.v1_7_R4.NetworkManager;
 import net.minecraft.server.v1_7_R4.Packet;
 import net.minecraft.server.v1_7_R4.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_7_R4.PacketPlayOutPlayerInfo;
+import net.minecraft.server.v1_7_R4.PacketPlayOutRespawn;
 import net.minecraft.server.v1_7_R4.PlayerConnection;
 import net.minecraft.server.v1_7_R4.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
@@ -169,7 +170,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter showRealPlayers(Player player) {
-        if(!this.initialized.contains(player)) {
+        if (!this.initialized.contains(player)) {
             final PlayerConnection connection = this.getPlayerConnection(player);
             final NetworkManager networkManager = connection.networkManager;
 
@@ -177,11 +178,19 @@ public class v1_7_R4TabAdapter extends TabAdapter {
                 final Field outgoingQueueField = networkManager.getClass().getDeclaredField("k");
                 outgoingQueueField.setAccessible(true);
 
-                ((Queue<?>) outgoingQueueField.get(networkManager)).removeIf(object ->
-                        Objects.nonNull(object) &&
-                                object instanceof PacketPlayOutNamedEntitySpawn &&
-                                this.handlePacketPlayOutNamedEntitySpawn(player, (PacketPlayOutNamedEntitySpawn) object)
-                );
+                ((Queue<?>) outgoingQueueField.get(networkManager)).removeIf(object -> {
+                    if (object != null) {
+                        if (object instanceof PacketPlayOutNamedEntitySpawn) {
+                            this.handlePacketPlayOutNamedEntitySpawn(player, (PacketPlayOutNamedEntitySpawn) object);
+                            return true;
+                        } else if (object instanceof PacketPlayOutRespawn) {
+                            this.handlePacketPlayOutRespawn(player);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
             } catch (NoSuchFieldException | IllegalAccessException e) {
                 e.printStackTrace();
             }
@@ -195,9 +204,8 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      *
      * @param player the player to handle it for
      * @param packet the packet to handle
-     * @return always true
      */
-    private boolean handlePacketPlayOutNamedEntitySpawn(Player player, PacketPlayOutNamedEntitySpawn packet) {
+    private void handlePacketPlayOutNamedEntitySpawn(Player player, PacketPlayOutNamedEntitySpawn packet) {
         try {
             final Field gameProfileField = packet.getClass().getDeclaredField("b");
             gameProfileField.setAccessible(true);
@@ -205,13 +213,20 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
             if (target != null) {
-                sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(getEntityPlayer(player)));
+                sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(getEntityPlayer(target)));
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
         }
+    }
 
-        return true;
+    /**
+     * Handle an {@link PacketPlayOutRespawn} packet
+     *
+     * @param player the player to handle it for
+     */
+    private void handlePacketPlayOutRespawn(Player player) {
+        this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(this.getEntityPlayer(player)));
     }
 
     /**
