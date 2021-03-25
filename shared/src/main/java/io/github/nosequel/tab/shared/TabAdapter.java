@@ -41,7 +41,6 @@ public abstract class TabAdapter {
         return this;
     }
 
-
     /**
      * Clear a player's tab
      *
@@ -55,7 +54,6 @@ public abstract class TabAdapter {
 
         return this;
     }
-
 
     /**
      * Send the header and footer to a player
