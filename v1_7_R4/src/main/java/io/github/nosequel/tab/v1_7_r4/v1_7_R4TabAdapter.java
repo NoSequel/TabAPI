@@ -76,7 +76,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public int getMaxElements(Player player) {
-        return ((CraftPlayer) player).getHandle().playerConnection.networkManager.getVersion() > 5 ? 80 : 60;
+        return 60;
     }
 
     /**
