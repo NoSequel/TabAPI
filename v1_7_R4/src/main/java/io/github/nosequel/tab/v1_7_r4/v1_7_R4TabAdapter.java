@@ -54,8 +54,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter sendHeaderFooter(Player player, String header, String footer) {
-        if(this.getMaxElements(player) == 60) {
-            System.out.println(this.getMaxElements(player));
+        if(this.getMaxElements(player) != 60) {
             this.sendPacket(player, new ProtocolInjector.PacketTabHeader(
                     ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(header) + "\"}"),
                     ChatSerializer.a("{text:\"" + StringEscapeUtils.escapeJava(footer) + "\"}")
