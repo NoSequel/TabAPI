@@ -14,6 +14,7 @@ import net.minecraft.server.v1_8_R3.Packet;
 import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
+import net.minecraft.server.v1_8_R3.PacketPlayOutRespawn;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.apache.commons.lang.StringEscapeUtils;
@@ -21,6 +22,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_8_R3.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 
+import java.awt.Dimension;
 import java.lang.reflect.Field;
 import java.util.ArrayList;
 import java.util.List;
@@ -198,7 +200,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     private ChannelDuplexHandler createShowListener(Player player) {
         return new ChannelDuplexHandler() {
             @Override
-            public void write(ChannelHandlerContext channelHandlerContext, Object packet, ChannelPromise promise) throws Exception {
+            public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
                 if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                     final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
                     final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
@@ -210,9 +212,11 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                     if (target != null) {
                         sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
                     }
+                } else if (packet instanceof PacketPlayOutRespawn) {
+                    sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, player);
                 }
 
-                super.write(channelHandlerContext, packet, promise);
+                super.write(context, packet, promise);
             }
         };
     }
