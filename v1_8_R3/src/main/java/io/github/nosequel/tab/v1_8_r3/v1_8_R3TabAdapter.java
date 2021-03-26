@@ -59,20 +59,22 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter sendHeaderFooter(Player player, String header, String footer) {
-        final Packet<?> packet = new PacketPlayOutPlayerListHeaderFooter(
-                IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + header + "\"}")
-        );
+        if (header != null || footer != null) {
+            final Packet<?> packet = new PacketPlayOutPlayerListHeaderFooter(
+                    IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + header + "\"}")
+            );
 
-        try {
-            final Field footerField = packet.getClass().getDeclaredField("b");
+            try {
+                final Field footerField = packet.getClass().getDeclaredField("b");
 
-            footerField.setAccessible(true);
-            footerField.set(packet, IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + footer + "\"}"));
-        } catch (IllegalAccessException | NoSuchFieldException e) {
-            e.printStackTrace();
+                footerField.setAccessible(true);
+                footerField.set(packet, IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + footer + "\"}"));
+            } catch (IllegalAccessException | NoSuchFieldException e) {
+                e.printStackTrace();
+            }
+
+            this.sendPacket(player, packet);
         }
-
-        this.sendPacket(player, packet);
 
         return this;
     }
