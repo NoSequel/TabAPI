@@ -31,11 +31,11 @@ public abstract class TabAdapter {
     public TabAdapter handleElement(Player player, TabElement element) {
         final int rows = this.getMaxElements(player) / 20;
 
-        for(int y = 0; y < 20; y++) {
-            for(int x = 0; x < rows; x++) {
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < rows; x++) {
                 final TabEntry entry = element.getEntry(x, y);
 
-                this.sendEntryData(player, y*rows+x, entry.getPing(), entry.getText(), entry.getSkinData());
+                this.sendEntryData(player, y * rows + x, entry.getPing(), entry.getText(), entry.getSkinData());
             }
         }
 
