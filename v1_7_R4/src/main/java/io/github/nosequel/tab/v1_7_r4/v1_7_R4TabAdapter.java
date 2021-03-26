@@ -3,6 +3,7 @@ package io.github.nosequel.tab.v1_7_r4;
 import io.github.nosequel.tab.shared.TabAdapter;
 import io.github.nosequel.tab.shared.entry.TabElement;
 import io.github.nosequel.tab.shared.entry.TabEntry;
+import io.github.nosequel.tab.shared.skin.SkinType;
 import net.minecraft.server.v1_7_R4.ChatSerializer;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
 import net.minecraft.server.v1_7_R4.MinecraftServer;
@@ -96,18 +97,19 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     public TabAdapter sendEntryData(Player player, int axis, int ping, String text, String[] skinData) {
         final GameProfile profile = this.profiles[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+        final Property property = profile.getProperties().get("textures").iterator().next();
 
+        skinData = skinData != null && skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()
+                ? skinData
+                : SkinType.DARK_GRAY.getSkinData();
 
-        if (skinData != null && skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
-            final Property property = profile.getProperties().get("textures").iterator().next();
+        if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
+            profile.getProperties().remove("textures", property);
+            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
-            if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
-                profile.getProperties().remove("textures", property);
-                profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
-
-                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
-            }
+            this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
         }
+
 
         final String name = profile.getName();
         final String[] splitText = this.splitText(text);
@@ -312,10 +314,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     @Override
     public TabAdapter createProfiles(int index, String text) {
         final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
-        final String[] skinData = new String[] {
-                "eyJ0aW1lc3RhbXAiOjE0MTEyNjg3OTI3NjUsInByb2ZpbGVJZCI6IjNmYmVjN2RkMGE1ZjQwYmY5ZDExODg1YTU0NTA3MTEyIiwicHJvZmlsZU5hbWUiOiJsYXN0X3VzZXJuYW1lIiwidGV4dHVyZXMiOnsiU0tJTiI6eyJ1cmwiOiJodHRwOi8vdGV4dHVyZXMubWluZWNyYWZ0Lm5ldC90ZXh0dXJlLzg0N2I1Mjc5OTg0NjUxNTRhZDZjMjM4YTFlM2MyZGQzZTMyOTY1MzUyZTNhNjRmMzZlMTZhOTQwNWFiOCJ9fX0=",
-                "u8sG8tlbmiekrfAdQjy4nXIcCfNdnUZzXSx9BE1X5K27NiUvE1dDNIeBBSPdZzQG1kHGijuokuHPdNi/KXHZkQM7OJ4aCu5JiUoOY28uz3wZhW4D+KG3dH4ei5ww2KwvjcqVL7LFKfr/ONU5Hvi7MIIty1eKpoGDYpWj3WjnbN4ye5Zo88I2ZEkP1wBw2eDDN4P3YEDYTumQndcbXFPuRRTntoGdZq3N5EBKfDZxlw4L3pgkcSLU5rWkd5UH4ZUOHAP/VaJ04mpFLsFXzzdU4xNZ5fthCwxwVBNLtHRWO26k/qcVBzvEXtKGFJmxfLGCzXScET/OjUBak/JEkkRG2m+kpmBMgFRNtjyZgQ1w08U6HHnLTiAiio3JswPlW5v56pGWRHQT5XWSkfnrXDalxtSmPnB5LmacpIImKgL8V9wLnWvBzI7SHjlyQbbgd+kUOkLlu7+717ySDEJwsFJekfuR6N/rpcYgNZYrxDwe4w57uDPlwNL6cJPfNUHV7WEbIU1pMgxsxaXe8WSvV87qLsR7H06xocl2C0JFfe2jZR4Zh3k9xzEnfCeFKBgGb4lrOWBu1eDWYgtKV67M2Y+B3W5pjuAjwAxn0waODtEn/3jKPbc/sxbPvljUCw65X+ok0UUN1eOwXV5l2EGzn05t3Yhwq19/GxARg63ISGE8CKw="
-        };
+        final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
         profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
