@@ -1,11 +1,11 @@
 package io.github.nosequel.tab.shared.skin;
 
-import com.mashape.unirest.http.HttpResponse;
-import com.mashape.unirest.http.JsonNode;
-import com.mashape.unirest.http.Unirest;
-import com.mashape.unirest.http.exceptions.UnirestException;
-import org.json.JSONObject;
+import com.google.gson.JsonObject;
+import com.google.gson.JsonParser;
 
+import java.io.IOException;
+import java.io.InputStreamReader;
+import java.net.URL;
 import java.util.HashMap;
 import java.util.Map;
 import java.util.UUID;
@@ -19,23 +19,18 @@ public class SkinUtil {
      *
      * @param uuid the unique identifier to get the skin data by
      * @return the skin data
-     * @throws UnirestException thrown if something went wrong while fetching from the mojang api
      */
-    public static String[] getSkinData(UUID uuid) throws UnirestException {
+    public static String[] getSkinData(UUID uuid) throws IOException {
         if (cache.containsKey(uuid)) {
             return cache.get(uuid);
         }
 
-        final HttpResponse<JsonNode> response = Unirest.get("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).asJson();
-        final JSONObject body = response.getBody().getObject().getJSONObject("properties");
-
-        if (!body.has("value") || !body.has("signature")) {
-            throw new IllegalArgumentException("Unable to find profile by UUID " + uuid.toString());
-        }
+        final URL url = new URL("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "") + "?unsigned=false");
+        final JsonObject json = new JsonParser().parse(new InputStreamReader(url.openStream())).getAsJsonObject().get("properties").getAsJsonArray().get(0).getAsJsonObject();
 
         return cache.put(uuid, new String[]{
-                body.getString("value"),
-                body.getString("signature")
+                json.get("value").getAsString(),
+                json.get("signature").getAsString()
         });
     }
 }
