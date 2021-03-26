@@ -3,7 +3,7 @@
 <p align="center">is an opensource tablist API made for the Spigot API.</p><br>
 
 # Support
-We currently support 4 NMS versions, ``v1_12_R1``, ``v1_9_R1``, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
+We currently support 4 NMS versions, ``v1_16_R3``, ``v1_12_R1``, ``v1_9_R1``, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
 
 # Usage
 The usage is very easy - here's an example:
