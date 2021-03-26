@@ -189,9 +189,10 @@ public class v1_15_R1TabAdapter extends TabAdapter {
      */
     private EntityPlayer getEntityPlayer(GameProfile profile) {
         final MinecraftServer server = MinecraftServer.getServer();
-        final PlayerInteractManager interactManager = new PlayerInteractManager(server.getWorldServer(DimensionManager.a(0)));
+        final WorldServer worldServer = server.getWorlds().iterator().next();
+        final PlayerInteractManager interactManager = new PlayerInteractManager(worldServer);
 
-        return new EntityPlayer(server, server.getWorldServer(DimensionManager.a(0)), profile, interactManager);
+        return new EntityPlayer(server, worldServer, profile, interactManager);
     }
 
     /**
