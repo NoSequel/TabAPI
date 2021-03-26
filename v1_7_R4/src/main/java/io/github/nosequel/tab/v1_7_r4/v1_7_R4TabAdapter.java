@@ -1,8 +1,6 @@
 package io.github.nosequel.tab.v1_7_r4;
 
 import io.github.nosequel.tab.shared.TabAdapter;
-import io.github.nosequel.tab.shared.entry.TabElement;
-import io.github.nosequel.tab.shared.entry.TabEntry;
 import io.github.nosequel.tab.shared.skin.SkinType;
 import net.minecraft.server.v1_7_R4.ChatSerializer;
 import net.minecraft.server.v1_7_R4.EntityPlayer;
