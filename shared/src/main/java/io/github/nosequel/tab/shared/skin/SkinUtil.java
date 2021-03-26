@@ -27,7 +27,7 @@ public class SkinUtil {
         }
 
         final HttpResponse<JsonNode> response = Unirest.get("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).asJson();
-        final JSONObject body = response.getBody().getObject();
+        final JSONObject body = response.getBody().getObject().getJSONObject("properties");
 
         if (!body.has("value") || !body.has("signature")) {
             throw new IllegalArgumentException("Unable to find profile by UUID " + uuid.toString());
