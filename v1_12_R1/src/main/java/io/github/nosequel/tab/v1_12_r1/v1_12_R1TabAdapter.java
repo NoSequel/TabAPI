@@ -1,4 +1,4 @@
-package io.github.nosequel.tab.v1_15_r1;
+package io.github.nosequel.tab.v1_12_r1;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;

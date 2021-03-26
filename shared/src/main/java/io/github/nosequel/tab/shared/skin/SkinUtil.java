@@ -26,7 +26,7 @@ public class SkinUtil {
             return cache.get(uuid);
         }
 
-        final HttpResponse<JsonNode> response = Unirest.get("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString()).asJson();
+        final HttpResponse<JsonNode> response = Unirest.get("https://sessionserver.mojang.com/session/minecraft/profile/" + uuid.toString().replace("-", "")).asJson();
         final JSONObject body = response.getBody().getObject();
 
         if (!body.has("value") || !body.has("signature")) {
