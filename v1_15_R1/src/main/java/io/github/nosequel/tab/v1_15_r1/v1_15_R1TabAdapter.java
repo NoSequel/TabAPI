@@ -102,7 +102,7 @@ public class v1_15_R1TabAdapter extends TabAdapter {
         entityPlayer.ping = ping;
         entityPlayer.listName = new ChatComponentText(text);
 
-        if (skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
+        if (skinData != null && skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()) {
             final Property property = profile.getProperties().get("textures").iterator().next();
 
             if(!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
