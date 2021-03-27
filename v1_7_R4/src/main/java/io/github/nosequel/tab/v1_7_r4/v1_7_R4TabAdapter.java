@@ -57,7 +57,9 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             this.profiles.put(player, new GameProfile[80]);
         }
 
+        System.out.println("hello");
         if (this.profiles.get(player).length < index) {
+            System.out.println(index);
             final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
             final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
