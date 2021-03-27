@@ -18,8 +18,6 @@ import org.apache.commons.lang.StringEscapeUtils;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 import org.spigotmc.ProtocolInjector;
 
 import java.lang.reflect.Field;
@@ -106,15 +104,9 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
         }
 
-        this.setupScoreboard(player, text, profile.getName());
-
-        if(this.getMaxElements(player) != 60) {
-            entityPlayer.listName = text;
-            this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
-        }
-
         entityPlayer.ping = ping;
 
+        this.setupScoreboard(player, text, profile.getName());
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
         return this;

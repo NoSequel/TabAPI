@@ -116,6 +116,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
         }
 
+        entityPlayer.ping = ping;
+
         this.setupScoreboard(player, text, profile.getName());
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
