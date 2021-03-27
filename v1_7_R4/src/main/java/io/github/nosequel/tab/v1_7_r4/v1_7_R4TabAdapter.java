@@ -15,9 +15,7 @@ import net.minecraft.server.v1_7_R4.PlayerInteractManager;
 import net.minecraft.util.com.mojang.authlib.GameProfile;
 import net.minecraft.util.com.mojang.authlib.properties.Property;
 import org.apache.commons.lang.StringEscapeUtils;
-import org.apache.commons.lang.StringUtils;
 import org.bukkit.Bukkit;
-import org.bukkit.ChatColor;
 import org.bukkit.craftbukkit.v1_7_R4.entity.CraftPlayer;
 import org.bukkit.entity.Player;
 import org.bukkit.scoreboard.Scoreboard;
@@ -139,27 +137,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
         return this;
-    }
-
-    /**
-     * Split the text to display on the tablist
-     *
-     * @param text the text to split
-     * @return the split text
-     */
-    private String[] splitText(String text) {
-        if (text.length() < 17) {
-            return new String[]{text, ""};
-        } else {
-            final String left = text.substring(0, 16);
-            final String right = text.substring(16);
-
-            if (left.endsWith("§")) {
-                return new String[]{left.substring(0, left.toCharArray().length - 1), StringUtils.left(ChatColor.getLastColors(left) + "§" + right, 16)};
-            } else {
-                return new String[]{left, StringUtils.left(ChatColor.getLastColors(left) + right, 16)};
-            }
-        }
     }
 
     /**
