@@ -27,7 +27,7 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-
+u
 public class v1_8_R3TabAdapter extends TabAdapter {
 
     private final Map<Player, GameProfile[]> profiles = new HashMap<>();
