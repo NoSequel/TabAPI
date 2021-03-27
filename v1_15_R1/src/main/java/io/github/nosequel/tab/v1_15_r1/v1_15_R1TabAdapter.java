@@ -120,9 +120,9 @@ public class v1_15_R1TabAdapter extends TabAdapter {
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
         }
 
-        this.setupScoreboard(player, text, profile.getName());
+        entityPlayer.ping = ping;
 
-        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        this.setupScoreboard(player, text, profile.getName());
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;

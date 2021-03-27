@@ -20,8 +20,6 @@ import net.minecraft.server.v1_9_R1.PlayerInteractManager;
 import org.bukkit.Bukkit;
 import org.bukkit.craftbukkit.v1_9_R1.entity.CraftPlayer;
 import org.bukkit.entity.Player;
-import org.bukkit.scoreboard.Scoreboard;
-import org.bukkit.scoreboard.Team;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
@@ -116,9 +114,9 @@ public class v1_9_R1TabAdapter extends TabAdapter {
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
         }
 
-        this.setupScoreboard(player, text, profile.getName());
+        entityPlayer.ping = ping;
 
-        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        this.setupScoreboard(player, text, profile.getName());
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
