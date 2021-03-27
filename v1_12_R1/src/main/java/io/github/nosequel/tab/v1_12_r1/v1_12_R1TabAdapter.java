@@ -31,10 +31,6 @@ public class v1_12_R1TabAdapter extends TabAdapter {
     private final GameProfile[] profiles = new GameProfile[80];
     private final List<Player> initialized = new ArrayList<>();
 
-    public v1_12_R1TabAdapter() {
-        this.setupProfiles();
-    }
-
     /**
      * Send a packet to the player
      *
@@ -261,10 +257,9 @@ public class v1_12_R1TabAdapter extends TabAdapter {
      *
      * @param index the index of the profile
      * @param text  the text to display
-     * @return the current adapter instance
      */
     @Override
-    public TabAdapter createProfiles(int index, String text) {
+    public void createProfiles(int index, String text) {
         final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
         final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
@@ -272,6 +267,5 @@ public class v1_12_R1TabAdapter extends TabAdapter {
 
         this.profiles[index] = profile;
 
-        return this;
     }
 }

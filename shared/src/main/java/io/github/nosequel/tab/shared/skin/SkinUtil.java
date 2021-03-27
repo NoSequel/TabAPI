@@ -33,4 +33,20 @@ public class SkinUtil {
                 json.get("signature").getAsString()
         });
     }
+
+    /**
+     * Get the skin data by a player's unique identifier
+     *
+     * @param uuid the unique identifier to get the skin data by
+     * @return the skin data
+     */
+    public static String[] getSkinDataThrown(UUID uuid) {
+        try {
+            return getSkinData(uuid);
+        } catch (IOException exception) {
+            exception.printStackTrace();
+        }
+
+        return null;
+    }
 }
