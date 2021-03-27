@@ -282,7 +282,7 @@ public class v1_15_R1TabAdapter extends TabAdapter {
             this.profiles.put(player, new GameProfile[80]);
         }
 
-        if (this.profiles.get(player).length < index + 1) {
+        if (this.profiles.get(player).length < index+1 || this.profiles.get(player)[index] == null) {
             final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
             final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
