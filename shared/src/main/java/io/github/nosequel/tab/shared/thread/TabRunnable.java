@@ -18,6 +18,7 @@ public class TabRunnable extends BukkitRunnable {
             final TabElement tabElement = this.handler.getHandler().getElement(player);
 
             this.handler.getAdapter()
+                    .setupProfiles(player)
                     .showRealPlayers(player).addFakePlayers(player)
                     .hideRealPlayers(player).handleElement(player, tabElement)
                     .sendHeaderFooter(player, tabElement.getHeader(), tabElement.getFooter());

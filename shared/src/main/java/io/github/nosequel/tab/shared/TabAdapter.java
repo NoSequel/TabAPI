@@ -14,7 +14,7 @@ public abstract class TabAdapter {
     /**
      * Setup the profiles of the tab adapter
      */
-    public void setupProfiles() {
+    public TabAdapter setupProfiles(Player player) {
         for (int axis = 0; axis < 80; axis++) {
             final int x = axis % 4;
             final int y = axis / 4;
@@ -23,8 +23,10 @@ public abstract class TabAdapter {
                     : "§0§" + String.valueOf(y).toCharArray()[0]
             );
 
-            this.createProfiles(axis, text);
+            this.createProfiles(axis, text, player);
         }
+
+        return this;
     }
 
     /**
@@ -39,8 +41,13 @@ public abstract class TabAdapter {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < rows; x++) {
                 final TabEntry entry = element.getEntry(x, y);
+                final int index = y * rows + x;
 
-                this.sendEntryData(player, y * rows + x, entry.getPing(), entry.getText(), entry.getSkinData());
+                this.sendEntryData(player, index, entry.getPing(), entry.getText());
+
+                if (entry.getSkinData() != null && entry.getSkinData().length > 1) {
+                    this.updateSkin(entry.getSkinData(), index, player);
+                }
             }
         }
 
@@ -98,6 +105,15 @@ public abstract class TabAdapter {
     }
 
     /**
+     * Update the skin on the tablist for a player
+     *
+     * @param skinData the data of the new skin
+     * @param index    the index of the profile
+     * @param player   the player to update the skin for
+     */
+    public abstract void updateSkin(String[] skinData, int index, Player player);
+
+    /**
      * Check if the player should be able to see the fourth row
      *
      * @param player the player
@@ -108,10 +124,11 @@ public abstract class TabAdapter {
     /**
      * Create a new game profile
      *
-     * @param index the index of the profile
-     * @param text  the text to display
+     * @param index  the index of the profile
+     * @param text   the text to display
+     * @param player the player to make the profiles for
      */
-    public abstract void createProfiles(int index, String text);
+    public abstract void createProfiles(int index, String text, Player player);
 
     /**
      * Send the header and footer to a player
@@ -126,14 +143,13 @@ public abstract class TabAdapter {
     /**
      * Send an entry's data to a player
      *
-     * @param player   the player
-     * @param axis     the axis of the entry
-     * @param ping     the ping to display on the entry's position
-     * @param text     the text to display on the entry's position
-     * @param skinData the data to change the entity's skin to
+     * @param player the player
+     * @param axis   the axis of the entry
+     * @param ping   the ping to display on the entry's position
+     * @param text   the text to display on the entry's position
      * @return the current adapter instance
      */
-    public abstract TabAdapter sendEntryData(Player player, int axis, int ping, String text, String[] skinData);
+    public abstract TabAdapter sendEntryData(Player player, int axis, int ping, String text);
 
     /**
      * Add fake players to the player's tablist
