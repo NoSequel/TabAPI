@@ -3,8 +3,11 @@ package io.github.nosequel.tab.shared;
 import io.github.nosequel.tab.shared.entry.TabElement;
 import io.github.nosequel.tab.shared.entry.TabEntry;
 import org.apache.commons.lang.StringUtils;
+import org.bukkit.Bukkit;
 import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
+import org.bukkit.scoreboard.Scoreboard;
+import org.bukkit.scoreboard.Team;
 
 public abstract class TabAdapter {
 
@@ -79,6 +82,34 @@ public abstract class TabAdapter {
                 return new String[]{left, StringUtils.left(ChatColor.getLastColors(left) + right, 16)};
             }
         }
+    }
+
+    /**
+     * Setup the scoreboard for the player
+     *
+     * @param player the player to setup the scoreboard for
+     * @param text   the text to display
+     * @param name   the name of the team
+     */
+    public void setupScoreboard(Player player, String text, String name) {
+        final String[] splitText = this.splitText(text);
+
+        final Scoreboard scoreboard = player.getScoreboard() == null
+                ? Bukkit.getScoreboardManager().getNewScoreboard()
+                : player.getScoreboard();
+
+        final Team team = scoreboard.getTeam(name) == null
+                ? scoreboard.registerNewTeam(name)
+                : scoreboard.getTeam(name);
+
+        if (!team.hasEntry(name)) {
+            team.addEntry(name);
+        }
+
+        team.setPrefix(splitText[0]);
+        team.setSuffix(splitText[1]);
+
+        player.setScoreboard(scoreboard);
     }
 
     /**

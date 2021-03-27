@@ -120,26 +120,7 @@ public class v1_16_R3TabAdapter extends TabAdapter {
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
         }
 
-        final String name = profile.getName();
-        final String[] splitText = this.splitText(text);
-
-        final Scoreboard scoreboard = player.getScoreboard() == null
-                ? Bukkit.getScoreboardManager().getNewScoreboard()
-                : player.getScoreboard();
-
-        final Team team = scoreboard.getTeam(name) == null
-                ? scoreboard.registerNewTeam(name)
-                : scoreboard.getTeam(name);
-
-        if (!team.hasEntry(name)) {
-            team.addEntry(name);
-        }
-
-        team.setPrefix(splitText[0]);
-        team.setSuffix(splitText[1]);
-
-        player.setScoreboard(scoreboard);
-
+        this.setupScoreboard(player, text, profile.getName());
 
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
