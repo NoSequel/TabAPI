@@ -23,17 +23,15 @@ import org.bukkit.entity.Player;
 
 import java.lang.reflect.Field;
 import java.util.ArrayList;
+import java.util.HashMap;
 import java.util.List;
+import java.util.Map;
 import java.util.UUID;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
-    private final GameProfile[] profiles = new GameProfile[80];
+    private final Map<Player, GameProfile[]> profiles = new HashMap<>();
     private final List<Player> initialized = new ArrayList<>();
-
-    public v1_8_R3TabAdapter() {
-        this.setupProfiles();
-    }
 
     /**
      * Send a packet to the player
@@ -77,6 +75,32 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
 
     /**
+     * Update the skin on the tablist for a player
+     *
+     * @param skinData the data of the new skin
+     * @param index    the index of the profile
+     * @param player   the player to update the skin for
+     */
+    @Override
+    public void updateSkin(String[] skinData, int index, Player player) {
+        final GameProfile profile = this.profiles.get(player)[index];
+        final Property property = profile.getProperties().get("textures").iterator().next();
+        final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
+
+        skinData = skinData != null && skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()
+                ? skinData
+                : SkinType.DARK_GRAY.getSkinData();
+
+        if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
+            profile.getProperties().remove("textures", property);
+            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
+            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
+        }
+    }
+
+
+    /**
      * Check if the player should be able to see the fourth row
      *
      * @param player the player
@@ -94,25 +118,12 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      * @param axis     the axis of the entry
      * @param ping     the ping to display on the entry's position
      * @param text     the text to display on the entry's position
-     * @param skinData the data to change the entity's skin to
      * @return the current adapter instance
      */
     @Override
-    public TabAdapter sendEntryData(Player player, int axis, int ping, String text, String[] skinData) {
-        final GameProfile profile = this.profiles[axis];
+    public TabAdapter sendEntryData(Player player, int axis, int ping, String text) {
+        final GameProfile profile = this.profiles.get(player)[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
-        final Property property = profile.getProperties().get("textures").iterator().next();
-
-        skinData = skinData != null && skinData.length >= 1 && !skinData[0].isEmpty() && !skinData[1].isEmpty()
-                ? skinData
-                : SkinType.DARK_GRAY.getSkinData();
-
-        if (!property.getSignature().equals(skinData[1]) || !property.getValue().equals(skinData[0])) {
-            profile.getProperties().remove("textures", property);
-            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
-
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
-        }
 
         entityPlayer.ping = ping;
 
@@ -132,7 +143,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public TabAdapter addFakePlayers(Player player) {
         if(!initialized.contains(player)) {
             for (int i = 0; i < 80; i++) {
-                final GameProfile profile = this.profiles[i];
+                final GameProfile profile = this.profiles.get(player)[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
@@ -256,17 +267,23 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     /**
      * Create a new game profile
      *
-     * @param index the index of the profile
-     * @param text  the text to display
+     * @param index  the index of the profile
+     * @param text   the text to display
+     * @param player the player to make the profiles for
      */
     @Override
-    public void createProfiles(int index, String text) {
-        final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
-        final String[] skinData = SkinType.DARK_GRAY.getSkinData();
+    public void createProfiles(int index, String text, Player player) {
+        if (!this.profiles.containsKey(player)) {
+            this.profiles.put(player, new GameProfile[80]);
+        }
 
-        profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+        if (this.profiles.get(player).length < index + 1) {
+            final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
+            final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
-        this.profiles[index] = profile;
+            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
+            this.profiles.get(player)[index] = profile;
+        }
     }
 }
