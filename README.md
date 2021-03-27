@@ -5,11 +5,11 @@
 # Support
 We currently support the following NMS versions, ``v1_16_R3``, ``v1_15_R1``, ``v1_14_R1``, ``v1_12_R1``, ``v1_10_R1``, ``v1_9_R1``, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
 
-# Usage
-The usage is very easy - here's an example:
-
 # Todo
 Probably add wrapper classes to reduce the amount of code duplication, however I'm lazy.
+
+# Usage
+The usage is very easy - here's an example:
 
 ### Registering the handler itself:
 Replace "v1_7_R4TabAdapter" with the version of NMS you're using (for example: v1_7_R4TabAdapter).
