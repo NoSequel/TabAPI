@@ -31,6 +31,10 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     private final GameProfile[] profiles = new GameProfile[80];
     private final List<Player> initialized = new ArrayList<>();
 
+    public v1_7_R4TabAdapter() {
+        this.setupProfiles();
+    }
+
     /**
      * Send a packet to the player
      *
@@ -55,7 +59,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
 
         this.profiles[index] = profile;
-
     }
 
     /**

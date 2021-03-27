@@ -12,13 +12,6 @@ import org.bukkit.scoreboard.Team;
 public abstract class TabAdapter {
 
     /**
-     * Constructor to make a new tab adapter instance
-     */
-    public TabAdapter() {
-        this.setupProfiles();
-    }
-
-    /**
      * Setup the profiles of the tab adapter
      */
     public void setupProfiles() {

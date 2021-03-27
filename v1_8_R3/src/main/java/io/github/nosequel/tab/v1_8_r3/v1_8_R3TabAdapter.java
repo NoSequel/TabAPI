@@ -31,6 +31,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     private final GameProfile[] profiles = new GameProfile[80];
     private final List<Player> initialized = new ArrayList<>();
 
+    public v1_8_R3TabAdapter() {
+        this.setupProfiles();
+    }
+
     /**
      * Send a packet to the player
      *
