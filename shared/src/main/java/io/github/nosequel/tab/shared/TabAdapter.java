@@ -12,6 +12,13 @@ import org.bukkit.scoreboard.Team;
 public abstract class TabAdapter {
 
     /**
+     * Constructor to make a new tab adapter instance
+     */
+    public TabAdapter() {
+        this.setupProfiles();
+    }
+
+    /**
      * Setup the profiles of the tab adapter
      */
     public void setupProfiles() {
@@ -47,21 +54,6 @@ public abstract class TabAdapter {
 
         return this;
     }
-
-    /**
-     * Clear a player's tab
-     *
-     * @param player the player who's tab to clear
-     * @return the current adapter instance
-     */
-    public TabAdapter clearTab(Player player) {
-        for (int i = 0; i < this.getMaxElements(player); i++) {
-            this.sendEntryData(player, i, -1, "", new String[]{});
-        }
-
-        return this;
-    }
-
 
     /**
      * Split the text to display on the tablist
@@ -113,6 +105,22 @@ public abstract class TabAdapter {
     }
 
     /**
+     * Check if the player should be able to see the fourth row
+     *
+     * @param player the player
+     * @return whether they should be able to see the fourth row
+     */
+    public abstract int getMaxElements(Player player);
+
+    /**
+     * Create a new game profile
+     *
+     * @param index the index of the profile
+     * @param text  the text to display
+     */
+    public abstract void createProfiles(int index, String text);
+
+    /**
      * Send the header and footer to a player
      *
      * @param player the player to send the header and footer to
@@ -121,14 +129,6 @@ public abstract class TabAdapter {
      * @return the current adapter instance
      */
     public abstract TabAdapter sendHeaderFooter(Player player, String header, String footer);
-
-    /**
-     * Check if the player should be able to see the fourth row
-     *
-     * @param player the player
-     * @return whether they should be able to see the fourth row
-     */
-    public abstract int getMaxElements(Player player);
 
     /**
      * Send an entry's data to a player
@@ -165,14 +165,5 @@ public abstract class TabAdapter {
      * @return the current adapter instance
      */
     public abstract TabAdapter showRealPlayers(Player player);
-
-    /**
-     * Create a new game profile
-     *
-     * @param index the index of the profile
-     * @param text  the text to display
-     * @return the current adapter instance
-     */
-    public abstract TabAdapter createProfiles(int index, String text);
 
 }

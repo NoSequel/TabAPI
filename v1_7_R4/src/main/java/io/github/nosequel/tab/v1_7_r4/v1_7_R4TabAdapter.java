@@ -31,10 +31,6 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     private final GameProfile[] profiles = new GameProfile[80];
     private final List<Player> initialized = new ArrayList<>();
 
-    public v1_7_R4TabAdapter() {
-        this.setupProfiles();
-    }
-
     /**
      * Send a packet to the player
      *
@@ -43,6 +39,23 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     private void sendPacket(Player player, Packet packet) {
         ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+    /**
+     * Create a new game profile
+     *
+     * @param index the index of the profile
+     * @param text  the text to display
+     */
+    @Override
+    public void createProfiles(int index, String text) {
+        final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
+        final String[] skinData = SkinType.DARK_GRAY.getSkinData();
+
+        profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
+        this.profiles[index] = profile;
+
     }
 
     /**
@@ -252,22 +265,5 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         return ((CraftPlayer) player).getHandle();
     }
 
-    /**
-     * Create a new game profile
-     *
-     * @param index the index of the profile
-     * @param text  the text to display
-     * @return the current adapter instance
-     */
-    @Override
-    public TabAdapter createProfiles(int index, String text) {
-        final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
-        final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
-        profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
-
-        this.profiles[index] = profile;
-
-        return this;
-    }
 }
