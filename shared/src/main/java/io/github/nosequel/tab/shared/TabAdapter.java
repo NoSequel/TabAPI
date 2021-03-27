@@ -2,6 +2,8 @@ package io.github.nosequel.tab.shared;
 
 import io.github.nosequel.tab.shared.entry.TabElement;
 import io.github.nosequel.tab.shared.entry.TabEntry;
+import org.apache.commons.lang.StringUtils;
+import org.bukkit.ChatColor;
 import org.bukkit.entity.Player;
 
 public abstract class TabAdapter {
@@ -55,6 +57,28 @@ public abstract class TabAdapter {
         }
 
         return this;
+    }
+
+
+    /**
+     * Split the text to display on the tablist
+     *
+     * @param text the text to split
+     * @return the split text
+     */
+    public String[] splitText(String text) {
+        if (text.length() < 17) {
+            return new String[]{text, ""};
+        } else {
+            final String left = text.substring(0, 16);
+            final String right = text.substring(16);
+
+            if (left.endsWith("§")) {
+                return new String[]{left.substring(0, left.toCharArray().length - 1), StringUtils.left(ChatColor.getLastColors(left) + "§" + right, 16)};
+            } else {
+                return new String[]{left, StringUtils.left(ChatColor.getLastColors(left) + right, 16)};
+            }
+        }
     }
 
     /**
