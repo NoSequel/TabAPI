@@ -106,33 +106,14 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(entityPlayer));
         }
 
-
-        final String name = profile.getName();
-        final String[] splitText = this.splitText(text);
-
-        final Scoreboard scoreboard = player.getScoreboard() == null
-                ? Bukkit.getScoreboardManager().getNewScoreboard()
-                : player.getScoreboard();
-
-        final Team team = scoreboard.getTeam(name) == null
-                ? scoreboard.registerNewTeam(name)
-                : scoreboard.getTeam(name);
-
-        if (!team.hasEntry(name)) {
-            team.addEntry(name);
-        }
-
-        team.setPrefix(splitText[0]);
-        team.setSuffix(splitText[1]);
-
-        player.setScoreboard(scoreboard);
-
-        entityPlayer.ping = ping;
+        this.setupScoreboard(player, text, profile.getName());
 
         if(this.getMaxElements(player) != 60) {
             entityPlayer.listName = text;
             this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
         }
+
+        entityPlayer.ping = ping;
 
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
 
