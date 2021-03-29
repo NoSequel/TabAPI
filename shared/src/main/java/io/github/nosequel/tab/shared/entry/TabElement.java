@@ -2,11 +2,13 @@ package io.github.nosequel.tab.shared.entry;
 
 import io.github.nosequel.tab.shared.skin.SkinType;
 import lombok.Getter;
+import lombok.Setter;
 
 import java.util.ArrayList;
 import java.util.List;
 
 @Getter
+@Setter
 public class TabElement {
 
     private final List<TabEntry> entries = new ArrayList<>();
@@ -25,24 +27,6 @@ public class TabElement {
         return this.entries.stream()
                 .filter(entry -> entry.getX() == x && entry.getY() == y)
                 .findFirst().orElseGet(() -> new TabEntry(x, y, "", -1));
-    }
-
-    /**
-     * Set the header text to something new
-     *
-     * @param text the new header text
-     */
-    public void header(String text) {
-        this.header = text;
-    }
-
-    /**
-     * Set the footer text to something new
-     *
-     * @param text the new footer text
-     */
-    public void footer(String text) {
-        this.footer = text;
     }
 
     /**
@@ -138,5 +122,4 @@ public class TabElement {
     public void add(int x, int y, String text, int ping, SkinType skinType) {
         this.add(x, y, text, ping, skinType.getSkinData());
     }
-
 }
