@@ -7,6 +7,7 @@ import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import net.minecraft.server.v1_15_R1.ChatComponentText;
 import net.minecraft.server.v1_15_R1.EntityPlayer;
 import net.minecraft.server.v1_15_R1.IChatBaseComponent;
 import net.minecraft.server.v1_15_R1.MinecraftServer;
@@ -129,6 +130,7 @@ public class v1_15_R1TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles.get(player)[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
+        entityPlayer.listName = new ChatComponentText(text);
         entityPlayer.ping = ping;
 
         this.setupScoreboard(player, text, profile.getName());

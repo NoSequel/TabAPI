@@ -7,6 +7,7 @@ import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPromise;
+import net.minecraft.server.v1_14_R1.ChatComponentText;
 import net.minecraft.server.v1_14_R1.EntityPlayer;
 import net.minecraft.server.v1_14_R1.IChatBaseComponent;
 import net.minecraft.server.v1_14_R1.MinecraftServer;
@@ -118,10 +119,10 @@ public class v1_14_R1TabAdapter extends TabAdapter {
     /**
      * Send an entry's data to a player
      *
-     * @param player the player
-     * @param axis   the axis of the entry
-     * @param ping   the ping to display on the entry's position
-     * @param text   the text to display on the entry's position
+     * @param player   the player
+     * @param axis     the axis of the entry
+     * @param ping     the ping to display on the entry's position
+     * @param text     the text to display on the entry's position
      * @return the current adapter instance
      */
     @Override
@@ -129,9 +130,12 @@ public class v1_14_R1TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles.get(player)[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
+        entityPlayer.listName = new ChatComponentText(text);
         entityPlayer.ping = ping;
 
         this.setupScoreboard(player, text, profile.getName());
+
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
