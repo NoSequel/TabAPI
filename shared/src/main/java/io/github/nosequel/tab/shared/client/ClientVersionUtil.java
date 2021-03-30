@@ -5,7 +5,6 @@ import org.bukkit.entity.Player;
 import org.bukkit.plugin.PluginManager;
 import protocolsupport.api.ProtocolSupportAPI;
 import us.myles.ViaVersion.api.Via;
-import us.myles.ViaVersion.bukkit.util.ProtocolSupportUtil;
 
 public class ClientVersionUtil {
 

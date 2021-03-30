@@ -22,7 +22,6 @@ public class TabThread extends Thread {
         this.handler = handler;
     }
 
-    @SneakyThrows
     @Override
     public void run() {
         while (true) {
@@ -36,7 +35,12 @@ public class TabThread extends Thread {
                         .sendHeaderFooter(player, tabElement.getHeader(), tabElement.getFooter());
             }
 
-            sleep(handler.getTicks()*50);
+            try {
+                sleep(handler.getTicks()*50);
+            } catch (InterruptedException e) {
+                this.run();
+                e.printStackTrace();
+            }
         }
     }
 }
