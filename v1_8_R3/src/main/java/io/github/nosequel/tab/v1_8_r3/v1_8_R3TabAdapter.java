@@ -3,6 +3,7 @@ package io.github.nosequel.tab.v1_8_r3;
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
 import io.github.nosequel.tab.shared.TabAdapter;
+import io.github.nosequel.tab.shared.client.ClientVersionUtil;
 import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
@@ -54,7 +55,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter sendHeaderFooter(Player player, String header, String footer) {
-        if (header != null || footer != null) {
+        if (this.getMaxElements(player) > 60 && (header != null || footer != null)) {
             final Packet<?> packet = new PacketPlayOutPlayerListHeaderFooter(
                     IChatBaseComponent.ChatSerializer.a("{\"text\":\"" + header + "\"}")
             );
@@ -109,7 +110,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public int getMaxElements(Player player) {
-        return 80;
+        final int version = ClientVersionUtil.getProtocolVersion(player);
+
+        return (version == 1 || version > 5 ? 80 : 60);
     }
 
     /**
@@ -149,7 +152,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter addFakePlayers(Player player) {
         if(!initialized.contains(player)) {
-            for (int i = 0; i < 80; i++) {
+            for (int i = 0; i < this.getMaxElements(player); i++) {
                 final GameProfile profile = this.profiles.get(player)[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
@@ -281,10 +284,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public void createProfiles(int index, String text, Player player) {
         if (!this.profiles.containsKey(player)) {
-            this.profiles.put(player, new GameProfile[80]);
+            this.profiles.put(player, new GameProfile[this.getMaxElements(player)]);
         }
 
-        if (this.profiles.get(player).length < index+1 || this.profiles.get(player)[index] == null) {
+        if (index < this.getMaxElements(player) && (this.profiles.get(player).length < index+1 || this.profiles.get(player)[index] == null)) {
             final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
             final String[] skinData = SkinType.DARK_GRAY.getSkinData();
 
