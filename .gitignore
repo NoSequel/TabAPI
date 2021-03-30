@@ -112,4 +112,4 @@ buildNumber.properties
 run/
 
 # Tab API specific
-testing/
+/testing
