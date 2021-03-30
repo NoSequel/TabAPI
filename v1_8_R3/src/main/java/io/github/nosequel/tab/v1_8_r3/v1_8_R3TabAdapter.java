@@ -112,7 +112,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public int getMaxElements(Player player) {
         final int version = ClientVersionUtil.getProtocolVersion(player);
 
-        return (version == 1 || version > 5 ? 80 : 60);
+        return (version == -1 || version > 5 ? 80 : 60);
     }
 
     /**
@@ -201,10 +201,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter showRealPlayers(Player player) {
-        if(!this.initialized.contains(player)) {
-            this.getPlayerConnection(player).networkManager.channel.pipeline().addBefore(
-                    "packet_handler",
-                    player.getName(),
+        if (!this.initialized.contains(player)) {
+            this.getPlayerConnection(player).networkManager.channel.pipeline().addFirst(
                     this.createShowListener(player)
             );
         }
