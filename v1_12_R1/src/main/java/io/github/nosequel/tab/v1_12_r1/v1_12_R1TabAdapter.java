@@ -199,9 +199,7 @@ public class v1_12_R1TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
-            this.getPlayerConnection(player).networkManager.channel.pipeline().addBefore(
-                    "packet_handler",
-                    player.getName(),
+            this.getPlayerConnection(player).networkManager.channel.pipeline().addFirst(
                     this.createShowListener(player)
             );
         }
