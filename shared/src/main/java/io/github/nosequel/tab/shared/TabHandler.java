@@ -1,7 +1,7 @@
 package io.github.nosequel.tab.shared;
 
 import io.github.nosequel.tab.shared.entry.TabElementHandler;
-import io.github.nosequel.tab.shared.thread.TabRunnable;
+import io.github.nosequel.tab.shared.thread.TabThread;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -10,6 +10,7 @@ public class TabHandler {
 
     private final TabAdapter adapter;
     private final TabElementHandler handler;
+    private final long ticks;
 
     /**
      * Constructor to make a new tab handler
@@ -22,7 +23,8 @@ public class TabHandler {
     public TabHandler(TabAdapter adapter, TabElementHandler handler, JavaPlugin plugin, long ticks) {
         this.adapter = adapter;
         this.handler = handler;
+        this.ticks = ticks;
 
-        new TabRunnable(this).runTaskTimer(plugin, 0L, ticks);
+        new TabThread(this).start();
     }
 }
