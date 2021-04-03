@@ -179,7 +179,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         final MinecraftServer server = MinecraftServer.getServer();
         final PlayerInteractManager interactManager = new PlayerInteractManager(server.getWorldServer(0));
 
-        return new EntityPlayer(server, server.getWorldServer(0), profile, interactManager);
+        return new EntityPlayer(server, server.worlds.iterator().next(), profile, interactManager);
     }
 
     /**
