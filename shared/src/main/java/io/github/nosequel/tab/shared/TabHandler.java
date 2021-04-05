@@ -1,7 +1,7 @@
 package io.github.nosequel.tab.shared;
 
 import io.github.nosequel.tab.shared.entry.TabElementHandler;
-import io.github.nosequel.tab.shared.thread.ThreadRunnable;
+import io.github.nosequel.tab.shared.thread.TabRunnable;
 import lombok.Getter;
 import org.bukkit.plugin.java.JavaPlugin;
 
@@ -25,6 +25,6 @@ public class TabHandler {
         this.handler = handler;
         this.ticks = ticks;
 
-        new ThreadRunnable(this).runTaskTimer(plugin, 0L, ticks);
+        new TabRunnable(this).runTaskTimer(plugin, 0L, ticks);
     }
 }

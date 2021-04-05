@@ -8,7 +8,7 @@ import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
 
-public class ThreadRunnable extends BukkitRunnable {
+public class TabRunnable extends BukkitRunnable {
 
     private final TabHandler handler;
 
@@ -17,7 +17,7 @@ public class ThreadRunnable extends BukkitRunnable {
      *
      * @param handler the handler to register it to
      */
-    public ThreadRunnable(TabHandler handler) {
+    public TabRunnable(TabHandler handler) {
         this.handler = handler;
     }
 
