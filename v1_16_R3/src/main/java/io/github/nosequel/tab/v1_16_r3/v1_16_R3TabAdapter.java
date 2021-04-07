@@ -2,6 +2,7 @@ package io.github.nosequel.tab.v1_16_r3;
 
 import com.mojang.authlib.GameProfile;
 import com.mojang.authlib.properties.Property;
+import com.mojang.brigadier.arguments.StringArgumentType;
 import io.github.nosequel.tab.shared.TabAdapter;
 import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
@@ -224,6 +225,20 @@ public class v1_16_R3TabAdapter extends TabAdapter {
     }
 
     /**
+     * Show a real player to a player
+     *
+     * @param player the player
+     * @param target the player to show to the other player
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter showPlayer(Player player, Player target) {
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+
+        return this;
+    }
+
+    /**
      * Create the listener required to show the players
      *
      * @param player the player to create it for
@@ -242,10 +257,10 @@ public class v1_16_R3TabAdapter extends TabAdapter {
                     final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
 
                     if (target != null) {
-                        sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+                        showPlayer(player, target);
                     }
                 } else if (packet instanceof PacketPlayOutRespawn) {
-                    sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, player);
+                    showPlayer(player, player);
                 }
 
                 super.write(context, packet, promise);

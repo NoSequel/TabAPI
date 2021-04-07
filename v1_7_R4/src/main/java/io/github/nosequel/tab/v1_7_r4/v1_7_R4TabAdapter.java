@@ -206,9 +206,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hidePlayer(Player player, Player target) {
-        if(player.canSee(target) || target.equals(player)) {
-            this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
-        }
+        this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
 
         return this;
     }
@@ -251,6 +249,20 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     }
 
     /**
+     * Show a real player to a player
+     *
+     * @param player the player
+     * @param target the player to show to the other player
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter showPlayer(Player player, Player target) {
+        this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(this.getEntityPlayer(target)));
+
+        return this;
+    }
+
+    /**
      * Handle an {@link PacketPlayOutNamedEntitySpawn} packet
      *
      * @param player the player to handle it for
@@ -264,7 +276,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
             if (target != null) {
-                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(this.getEntityPlayer(target)));
+                showPlayer(player, target);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
@@ -277,7 +289,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
      * @param player the player to handle it for
      */
     private void handlePacketPlayOutRespawn(Player player) {
-        this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(this.getEntityPlayer(player)));
+        this.showPlayer(player, player);
     }
 
     /**

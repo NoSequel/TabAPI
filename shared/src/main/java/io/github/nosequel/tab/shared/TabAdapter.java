@@ -168,7 +168,7 @@ public abstract class TabAdapter {
     public abstract TabAdapter hideRealPlayers(Player player);
 
     /**
-     * Hide a real player om the tablist
+     * Hide a real player from the tab
      *
      * @param player the player to hide the player from
      * @param target the player to hide
@@ -183,5 +183,14 @@ public abstract class TabAdapter {
      * @return the current adapter instance
      */
     public abstract TabAdapter showRealPlayers(Player player);
+
+    /**
+     * Show a real player to a player
+     *
+     * @param player the player
+     * @param target the player to show to the other player
+     * @return the current adapter instance
+     */
+    public abstract TabAdapter showPlayer(Player player, Player target);
 
 }
