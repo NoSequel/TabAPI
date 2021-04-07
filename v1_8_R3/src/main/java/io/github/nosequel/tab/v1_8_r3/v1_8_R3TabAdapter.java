@@ -221,10 +221,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         if (!this.initialized.contains(player)) {
             final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
 
-            while (pipeline.get("packet_handler") == null) {
-                this.showRealPlayers(player);
-            }
-
             pipeline.addBefore(
                     "packet_handler",
                     player.getName(),
@@ -259,6 +255,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         return new ChannelDuplexHandler() {
             @Override
             public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
+                System.out.println(packet.getClass().getName());
+
                 if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                     final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
                     final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
