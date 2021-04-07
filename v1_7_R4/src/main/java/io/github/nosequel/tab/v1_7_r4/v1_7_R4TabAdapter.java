@@ -276,7 +276,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
             if (target != null) {
-                showPlayer(player, target);
+                this.showPlayer(player, target);
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();

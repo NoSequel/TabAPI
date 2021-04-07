@@ -9,7 +9,6 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
-import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
@@ -30,8 +29,6 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
-import java.util.concurrent.Executors;
-import java.util.concurrent.TimeUnit;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
@@ -45,7 +42,31 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      * @param packet the packet to send
      */
     private void sendPacket(Player player, Packet<?> packet) {
-        this.getPlayerConnection(player).sendPacket(packet);
+        ((CraftPlayer) player).getHandle().playerConnection.sendPacket(packet);
+    }
+
+
+    /**
+     * Create a new game profile
+     *
+     * @param index  the index of the profile
+     * @param text   the text to display
+     * @param player the player to make the profiles for
+     */
+    @Override
+    public void createProfiles(int index, String text, Player player) {
+        if (!this.profiles.containsKey(player)) {
+            this.profiles.put(player, new GameProfile[80]);
+        }
+
+        if (this.profiles.get(player).length < index+1 || this.profiles.get(player)[index] == null) {
+            final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
+            final String[] skinData = SkinType.DARK_GRAY.getSkinData();
+
+            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
+
+            this.profiles.get(player)[index] = profile;
+        }
     }
 
     /**
@@ -104,7 +125,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         }
     }
 
-
     /**
      * Check if the player should be able to see the fourth row
      *
@@ -115,7 +135,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public int getMaxElements(Player player) {
         final int version = ClientVersionUtil.getProtocolVersion(player);
 
-        return (version == -1 || version > 5 ? 80 : 60);
+        return version == -1 || version > 5 ? 80 : 60;
     }
 
     /**
@@ -132,15 +152,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         final GameProfile profile = this.profiles.get(player)[axis];
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
-        entityPlayer.listName = new ChatComponentText(text);
         entityPlayer.ping = ping;
 
         this.setupScoreboard(player, text, profile.getName());
-
-        if(this.getMaxElements(player) == 80) {
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
-        }
-
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
@@ -154,7 +168,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter addFakePlayers(Player player) {
-        if(!initialized.contains(player)) {
+        if(!this.initialized.contains(player)) {
             for (int i = 0; i < this.getMaxElements(player); i++) {
                 final GameProfile profile = this.profiles.get(player)[i];
                 final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
@@ -162,11 +176,12 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                 this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, entityPlayer);
             }
 
-            initialized.add(player);
+            this.initialized.add(player);
         }
 
         return this;
     }
+
 
     /**
      * Get an entity player by a profile
@@ -189,7 +204,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
-        for(Player target : Bukkit.getOnlinePlayers()) {
+        for (Player target : Bukkit.matchPlayer("")) {
             this.hidePlayer(player, target);
         }
 
@@ -232,20 +247,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     }
 
     /**
-     * Show a real player to a player
-     *
-     * @param player the player
-     * @param target the player to show to the other player
-     * @return the current adapter instance
-     */
-    @Override
-    public TabAdapter showPlayer(Player player, Player target) {
-        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
-
-        return this;
-    }
-
-    /**
      * Create the listener required to show the players
      *
      * @param player the player to create it for
@@ -276,13 +277,27 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     }
 
     /**
+     * Show a real player to a player
+     *
+     * @param player the player
+     * @param target the player to show to the other player
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter showPlayer(Player player, Player target) {
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.ADD_PLAYER, target);
+
+        return this;
+    }
+
+    /**
      * Get the {@link PlayerConnection} of a player
      *
      * @param player the player to get the player connection object from
      * @return the object
      */
     private PlayerConnection getPlayerConnection(Player player) {
-        return ((CraftPlayer) player).getHandle().playerConnection;
+        return this.getEntityPlayer(player).playerConnection;
     }
 
     /**
@@ -308,25 +323,14 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     }
 
     /**
-     * Create a new game profile
+     * Get the {@link EntityPlayer} object of a player
      *
-     * @param index  the index of the profile
-     * @param text   the text to display
-     * @param player the player to make the profiles for
+     * @param player the player to get the entity player object from
+     * @return the entity player
      */
-    @Override
-    public void createProfiles(int index, String text, Player player) {
-        if (!this.profiles.containsKey(player)) {
-            this.profiles.put(player, new GameProfile[this.getMaxElements(player)]);
-        }
-
-        if (index < this.getMaxElements(player) && (this.profiles.get(player).length < index+1 || this.profiles.get(player)[index] == null)) {
-            final GameProfile profile = new GameProfile(UUID.randomUUID(), text);
-            final String[] skinData = SkinType.DARK_GRAY.getSkinData();
-
-            profile.getProperties().put("textures", new Property("textures", skinData[0], skinData[1]));
-
-            this.profiles.get(player)[index] = profile;
-        }
+    private EntityPlayer getEntityPlayer(Player player) {
+        return ((CraftPlayer) player).getHandle();
     }
+
+
 }
