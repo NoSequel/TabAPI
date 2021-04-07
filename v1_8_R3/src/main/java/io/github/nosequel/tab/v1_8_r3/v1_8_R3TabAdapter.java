@@ -257,10 +257,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         return new ChannelDuplexHandler() {
             @Override
             public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
-                if(!(packet instanceof PacketPlayOutScoreboardTeam) && !(packet instanceof PacketPlayOutPlayerInfo)) {
-                    System.out.println(packet.getClass().getName());
-                }
-
                 if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                     final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
                     final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
@@ -269,10 +265,8 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
                     final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
 
-                    System.out.println("packet is PacketPlayOutNamedEntitySpawn");
                     if (target != null) {
                         showPlayer(player, target);
-                        System.out.println("target is not null");
                     }
                 } else if (packet instanceof PacketPlayOutRespawn) {
                     showPlayer(player, player);
