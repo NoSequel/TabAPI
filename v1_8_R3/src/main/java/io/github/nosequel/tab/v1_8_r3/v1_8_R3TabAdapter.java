@@ -267,8 +267,10 @@ public class v1_8_R3TabAdapter extends TabAdapter {
 
                     final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
 
+                    System.out.println("packet is PacketPlayOutNamedEntitySpawn");
                     if (target != null) {
                         showPlayer(player, target);
+                        System.out.println("target is not null");
                     }
                 } else if (packet instanceof PacketPlayOutRespawn) {
                     showPlayer(player, player);
