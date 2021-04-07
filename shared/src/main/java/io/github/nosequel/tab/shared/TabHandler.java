@@ -30,6 +30,6 @@ public class TabHandler {
         new TabRunnable(this).runTaskTimer(plugin, 0L, ticks);
 
         // register listener for hiding players from tab
-        Bukkit.getPluginManager().registerEvents(new PlayerListener(adapter), plugin);
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(adapter, plugin), plugin);
     }
 }
