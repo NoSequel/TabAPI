@@ -1,8 +1,10 @@
 package io.github.nosequel.tab.shared;
 
 import io.github.nosequel.tab.shared.entry.TabElementHandler;
+import io.github.nosequel.tab.shared.listener.PlayerListener;
 import io.github.nosequel.tab.shared.thread.TabRunnable;
 import lombok.Getter;
+import org.bukkit.Bukkit;
 import org.bukkit.plugin.java.JavaPlugin;
 
 @Getter
@@ -26,5 +28,8 @@ public class TabHandler {
         this.ticks = ticks;
 
         new TabRunnable(this).runTaskTimer(plugin, 0L, ticks);
+
+        // register listener for hiding players from tab
+        Bukkit.getPluginManager().registerEvents(new PlayerListener(adapter), plugin);
     }
 }
