@@ -18,7 +18,6 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_8_R3.PacketPlayOutRespawn;
-import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.bukkit.Bukkit;
@@ -31,6 +30,8 @@ import java.util.HashMap;
 import java.util.List;
 import java.util.Map;
 import java.util.UUID;
+import java.util.concurrent.Executors;
+import java.util.concurrent.TimeUnit;
 
 public class v1_8_R3TabAdapter extends TabAdapter {
 
@@ -204,9 +205,12 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hidePlayer(Player player, Player target) {
-        if(player.canSee(target) || target.equals(player)) {
-            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
-        }
+        this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
+
+        Executors.newSingleThreadScheduledExecutor().schedule(
+                () -> this.showPlayer(player, target),
+                100, TimeUnit.MILLISECONDS
+        );
 
         return this;
     }
@@ -220,7 +224,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
-            System.out.println("not initialized");
             final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
 
             pipeline.addBefore(
