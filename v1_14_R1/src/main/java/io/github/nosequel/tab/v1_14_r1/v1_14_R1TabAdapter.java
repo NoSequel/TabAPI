@@ -185,7 +185,23 @@ public class v1_14_R1TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
-        for (Player target : Bukkit.getOnlinePlayers()) {
+        for(Player target : Bukkit.getOnlinePlayers()) {
+            this.hidePlayer(player, target);
+        }
+
+        return this;
+    }
+
+    /**
+     * Hide a real player om the tablist
+     *
+     * @param player the player to hide the player from
+     * @param target the player to hide
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter hidePlayer(Player player, Player target) {
+        if(player.canSee(target) || target.equals(player)) {
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
         }
 

@@ -19,8 +19,8 @@ public class PlayerListener implements Listener {
     public void onJoin(PlayerJoinEvent event) {
         Bukkit.getScheduler().runTaskLater(plugin, () -> {
             for (Player player : Bukkit.getOnlinePlayers()) {
-                if(!player.equals(event.getPlayer())) {
-                    adapter.hideRealPlayers(player);
+                if (!player.equals(event.getPlayer())) {
+                    adapter.hidePlayer(player, event.getPlayer());
                 }
             }
         }, 1L);

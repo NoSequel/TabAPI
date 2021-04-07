@@ -1,4 +1,4 @@
-package io.github.nosequel.tab.shared.thread;
+package io.github.nosequel.tab.shared;
 
 import io.github.nosequel.tab.shared.TabHandler;
 import io.github.nosequel.tab.shared.entry.TabElement;

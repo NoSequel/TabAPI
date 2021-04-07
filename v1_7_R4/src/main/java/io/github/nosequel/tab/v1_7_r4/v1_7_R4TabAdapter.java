@@ -191,9 +191,23 @@ public class v1_7_R4TabAdapter extends TabAdapter {
     @Override
     public TabAdapter hideRealPlayers(Player player) {
         for (Player target : Bukkit.matchPlayer("")) {
-            if(player.canSee(target) || player.equals(target)) {
-                this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
-            }
+            this.hidePlayer(player, target);
+        }
+
+        return this;
+    }
+
+    /**
+     * Hide a real player om the tablist
+     *
+     * @param player the player to hide the player from
+     * @param target the player to hide
+     * @return the current adapter instance
+     */
+    @Override
+    public TabAdapter hidePlayer(Player player, Player target) {
+        if(player.canSee(target) || target.equals(player)) {
+            this.sendPacket(player, PacketPlayOutPlayerInfo.removePlayer(((CraftPlayer) target).getHandle()));
         }
 
         return this;
@@ -250,7 +264,7 @@ public class v1_7_R4TabAdapter extends TabAdapter {
             final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
             if (target != null) {
-                sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(getEntityPlayer(target)));
+                this.sendPacket(player, PacketPlayOutPlayerInfo.addPlayer(this.getEntityPlayer(target)));
             }
         } catch (NoSuchFieldException | IllegalAccessException e) {
             e.printStackTrace();
