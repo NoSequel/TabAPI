@@ -7,6 +7,7 @@ import io.github.nosequel.tab.shared.TabAdapter;
 import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import net.minecraft.server.v1_16_R3.ChatComponentText;
 import net.minecraft.server.v1_16_R3.EntityPlayer;
@@ -216,7 +217,15 @@ public class v1_16_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
-            this.getPlayerConnection(player).networkManager.channel.pipeline().addFirst(
+            final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
+
+            while (pipeline.get("packet_handler") == null) {
+                this.showRealPlayers(player);
+            }
+
+            pipeline.addBefore(
+                    "packet_handler",
+                    player.getName(),
                     this.createShowListener(player)
             );
         }
