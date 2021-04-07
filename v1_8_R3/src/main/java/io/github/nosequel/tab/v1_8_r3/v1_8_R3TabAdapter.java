@@ -207,11 +207,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     public TabAdapter hidePlayer(Player player, Player target) {
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.REMOVE_PLAYER, target);
 
-        Executors.newSingleThreadScheduledExecutor().schedule(
-                () -> this.showPlayer(player, target),
-                100, TimeUnit.MILLISECONDS
-        );
-
         return this;
     }
 
