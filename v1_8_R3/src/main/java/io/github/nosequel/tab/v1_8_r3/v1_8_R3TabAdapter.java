@@ -18,6 +18,7 @@ import net.minecraft.server.v1_8_R3.PacketPlayOutNamedEntitySpawn;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerInfo;
 import net.minecraft.server.v1_8_R3.PacketPlayOutPlayerListHeaderFooter;
 import net.minecraft.server.v1_8_R3.PacketPlayOutRespawn;
+import net.minecraft.server.v1_8_R3.PacketPlayOutScoreboardTeam;
 import net.minecraft.server.v1_8_R3.PlayerConnection;
 import net.minecraft.server.v1_8_R3.PlayerInteractManager;
 import org.bukkit.Bukkit;
@@ -219,6 +220,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
+            System.out.println("not initialized");
             final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
 
             pipeline.addBefore(
@@ -255,7 +257,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         return new ChannelDuplexHandler() {
             @Override
             public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
-                System.out.println(packet.getClass().getName());
+                if(!(packet instanceof PacketPlayOutScoreboardTeam) && !(packet instanceof PacketPlayOutPlayerInfo)) {
+                    System.out.println(packet.getClass().getName());
+                }
 
                 if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                     final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
