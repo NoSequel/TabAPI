@@ -21,6 +21,7 @@ public class PlayerListener implements Listener {
             for (Player player : Bukkit.getOnlinePlayers()) {
                 if (!player.equals(event.getPlayer())) {
                     adapter.hidePlayer(player, event.getPlayer());
+                    player.showPlayer(event.getPlayer());
                 }
             }
         }, 1L);
