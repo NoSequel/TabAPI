@@ -155,6 +155,11 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         entityPlayer.ping = ping;
 
         this.setupScoreboard(player, text, profile.getName());
+
+        if (this.getMaxElements(player) == 80) {
+            this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
+        }
+
         this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_LATENCY, entityPlayer);
 
         return this;
@@ -182,7 +187,6 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         return this;
     }
 
-
     /**
      * Get an entity player by a profile
      *
@@ -204,7 +208,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
-        for (Player target : Bukkit.matchPlayer("")) {
+        for (Player target : Bukkit.getOnlinePlayers()) {
             this.hidePlayer(player, target);
         }
 
