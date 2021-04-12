@@ -18,8 +18,10 @@ public abstract class TabAdapter {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 4; x++) {
                 final int index = y * 4 + x;
-                final char letterId = (char) (x + 113);
-                final String text = "!" + letterId + y;
+                final String text = "§0§" + x + (y > 9
+                        ? "§" + String.valueOf(y).toCharArray()[0] + "§" + String.valueOf(y).toCharArray()[1]
+                        : "§0§" + String.valueOf(y).toCharArray()[0]
+                );
 
                 this.createProfiles(index, text, player);
             }
