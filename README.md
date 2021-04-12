@@ -5,9 +5,6 @@
 # Support
 We currently support the following NMS versions, ``v1_16_R3``, ``v1_15_R1``, ``v1_14_R1``, ``v1_12_R1``, ``v1_10_R1``, ``v1_9_R1``, ``v1_8_R3`` and ``v1_7_R4``, we're willing to support more versions in the future, and feel free to open a pull request if you are able to add a version.
 
-# Issues
-- v1_8_R3 NMS (maybe higher, untested) seems to be breaking player visibility, tried several things, however it's not working. (still works on v1_7_R4 module)
-
 # Todo
 - Probably add wrapper classes to reduce the amount of code duplication, however I'm lazy.
 
