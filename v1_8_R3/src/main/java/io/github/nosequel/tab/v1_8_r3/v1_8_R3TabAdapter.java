@@ -208,9 +208,9 @@ public class v1_8_R3TabAdapter extends TabAdapter {
      */
     @Override
     public TabAdapter hideRealPlayers(Player player) {
-        for (Player target : Bukkit.getOnlinePlayers()) {
-            this.hidePlayer(player, target);
-        }
+        //for (Player target : Bukkit.getOnlinePlayers()) {
+        //    this.hidePlayer(player, target);
+        //}
 
         return this;
     }

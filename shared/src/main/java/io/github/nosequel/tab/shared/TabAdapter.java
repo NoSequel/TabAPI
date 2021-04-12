@@ -17,12 +17,11 @@ public abstract class TabAdapter {
     public TabAdapter setupProfiles(Player player) {
         for (int y = 0; y < 20; y++) {
             for (int x = 0; x < 4; x++) {
-                final String text = "§0§" + x + (y > 9
-                        ? "§" + String.valueOf(y).toCharArray()[0] + "§" + String.valueOf(y).toCharArray()[1]
-                        : "§0§" + String.valueOf(y).toCharArray()[0]
-                );
+                final int index = y * 4 + x;
+                final char letterId = (char) (x + 113);
+                final String text = "!" + letterId + y;
 
-                this.createProfiles(y * 4 + x, text, player);
+                this.createProfiles(index, text, player);
             }
         }
 
