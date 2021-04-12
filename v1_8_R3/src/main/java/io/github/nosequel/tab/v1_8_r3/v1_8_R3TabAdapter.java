@@ -199,7 +199,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         final MinecraftServer server = MinecraftServer.getServer();
         final PlayerInteractManager interactManager = new PlayerInteractManager(server.getWorldServer(0));
 
-        return new EntityPlayer(server, server.worlds.iterator().next(), profile, interactManager);
+        return new EntityPlayer(server, server.getWorldServer(0), profile, interactManager);
     }
 
     /**
@@ -240,13 +240,13 @@ public class v1_8_R3TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
-            final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
+            /**final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.channel.pipeline();
 
             pipeline.addBefore(
                     "packet_handler",
                     player.getName(),
                     this.createShowListener(player)
-            );
+            );**/
         }
 
         return this;
@@ -262,7 +262,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         return new ChannelDuplexHandler() {
             @Override
             public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
-                if (packet instanceof PacketPlayOutNamedEntitySpawn) {
+                /*if (packet instanceof PacketPlayOutNamedEntitySpawn) {
                     final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
                     final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
 
@@ -275,7 +275,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
                     }
                 } else if (packet instanceof PacketPlayOutRespawn) {
                     showPlayer(player, player);
-                }
+                }**/
 
                 super.write(context, packet, promise);
             }
