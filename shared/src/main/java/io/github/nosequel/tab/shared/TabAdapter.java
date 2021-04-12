@@ -15,15 +15,15 @@ public abstract class TabAdapter {
      * Setup the profiles of the tab adapter
      */
     public TabAdapter setupProfiles(Player player) {
-        for (int axis = 0; axis < 80; axis++) {
-            final int x = axis % 4;
-            final int y = axis / 4;
-            final String text = "§0§" + x + (y > 9
-                    ? "§" + String.valueOf(y).toCharArray()[0] + "§" + String.valueOf(y).toCharArray()[1]
-                    : "§0§" + String.valueOf(y).toCharArray()[0]
-            );
+        for (int y = 0; y < 20; y++) {
+            for (int x = 0; x < 4; x++) {
+                final String text = "§0§" + x + (y > 9
+                        ? "§" + String.valueOf(y).toCharArray()[0] + "§" + String.valueOf(y).toCharArray()[1]
+                        : "§0§" + String.valueOf(y).toCharArray()[0]
+                );
 
-            this.createProfiles(axis, text, player);
+                this.createProfiles(y * 4 + x, text, player);
+            }
         }
 
         return this;
