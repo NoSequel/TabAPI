@@ -9,6 +9,7 @@ import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
 import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
+import net.minecraft.server.v1_8_R3.ChatComponentText;
 import net.minecraft.server.v1_8_R3.EntityPlayer;
 import net.minecraft.server.v1_8_R3.IChatBaseComponent;
 import net.minecraft.server.v1_8_R3.MinecraftServer;
@@ -157,6 +158,7 @@ public class v1_8_R3TabAdapter extends TabAdapter {
         this.setupScoreboard(player, text, profile.getName());
 
         if (this.getMaxElements(player) == 80) {
+            entityPlayer.listName = new ChatComponentText(text);
             this.sendInfoPacket(player, PacketPlayOutPlayerInfo.EnumPlayerInfoAction.UPDATE_DISPLAY_NAME, entityPlayer);
         }
 
