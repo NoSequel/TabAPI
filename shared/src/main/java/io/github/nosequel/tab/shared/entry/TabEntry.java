@@ -5,7 +5,6 @@ import lombok.Getter;
 import lombok.RequiredArgsConstructor;
 import lombok.Setter;
 
-@RequiredArgsConstructor
 @Getter
 @Setter
 public class TabEntry {
@@ -15,7 +14,30 @@ public class TabEntry {
     private final String text;
     private final int ping;
 
-    private String[] skinData = SkinType.DARK_GRAY.getSkinData();
+    private String[] skinData;
+
+    /**
+     * Constructor to make a new tab entry object with provided skin data
+     *
+     * @param x    the x axis
+     * @param y    the y axis
+     * @param text the text to display on the slot
+     */
+    public TabEntry(int x, int y, String text) {
+        this(x, y, text, -1, SkinType.DARK_GRAY.getSkinData());
+    }
+
+    /**
+     * Constructor to make a new tab entry object with provided skin data
+     *
+     * @param x    the x axis
+     * @param y    the y axis
+     * @param text the text to display on the slot
+     * @param ping     the displayed latency
+     */
+    public TabEntry(int x, int y, String text, int ping) {
+        this(x, y, text, ping, SkinType.DARK_GRAY.getSkinData());
+    }
 
     /**
      * Constructor to make a new tab entry object with provided skin data

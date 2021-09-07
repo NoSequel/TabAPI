@@ -32,6 +32,15 @@ public class TabElement {
     /**
      * Add a new entry to the element
      *
+     * @param entry the entry to add
+     */
+    public void add(TabEntry entry) {
+        this.entries.add(entry);
+    }
+
+    /**
+     * Add a new entry to the element
+     *
      * @param index the index to get the axiss from
      * @param text  the text to display on the slot
      */

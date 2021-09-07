@@ -69,11 +69,9 @@ public abstract class TabAdapter {
             final String left = text.substring(0, 16);
             final String right = text.substring(16);
 
-            if (left.endsWith("§")) {
-                return new String[]{left.substring(0, left.toCharArray().length - 1), StringUtils.left(ChatColor.getLastColors(left) + "§" + right, 16)};
-            } else {
-                return new String[]{left, StringUtils.left(ChatColor.getLastColors(left) + right, 16)};
-            }
+            return left.endsWith("§")
+                    ? new String[]{left.substring(0, left.toCharArray().length - 1), StringUtils.left(ChatColor.getLastColors(left) + "§" + right, 16)}
+                    : new String[]{left, StringUtils.left(ChatColor.getLastColors(left) + right, 16)};
         }
     }
 

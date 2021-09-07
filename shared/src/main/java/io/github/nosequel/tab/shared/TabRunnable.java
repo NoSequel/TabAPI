@@ -1,9 +1,5 @@
 package io.github.nosequel.tab.shared;
 
-import io.github.nosequel.tab.shared.TabHandler;
-import io.github.nosequel.tab.shared.entry.TabElement;
-import lombok.RequiredArgsConstructor;
-import lombok.SneakyThrows;
 import org.bukkit.Bukkit;
 import org.bukkit.entity.Player;
 import org.bukkit.scheduler.BukkitRunnable;
