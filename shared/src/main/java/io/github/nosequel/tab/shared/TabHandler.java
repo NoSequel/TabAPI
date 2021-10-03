@@ -63,7 +63,7 @@ public class TabHandler {
     private TabAdapter createAdapter() throws ClassNotFoundException, IllegalAccessException, InstantiationException {
         final String serverPackage = Bukkit.getServer().getClass().getPackage().getName();
         final String nmsVersion = serverPackage.replace(".", ",").split(",")[3].substring(1);
-        final String disguisePackage = "io.github.nosequel.tab." + nmsVersion.toLowerCase() + ".v" + nmsVersion;
+        final String disguisePackage = "io.github.nosequel.tab.v" + nmsVersion.toLowerCase() + ".v" + nmsVersion;
 
         return (TabAdapter) Class.forName(disguisePackage + "TabAdapter").newInstance();
     }
