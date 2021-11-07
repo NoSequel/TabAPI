@@ -11,6 +11,7 @@
     <modules>
         <module>shared</module>
         <module>v1_7_R4</module>
+        <module>v1_8_R1</module>
         <module>v1_8_R3</module>
         <module>v1_9_R1</module>
         <module>v1_12_R1</module>

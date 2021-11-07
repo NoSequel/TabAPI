@@ -7,6 +7,7 @@ import io.github.nosequel.tab.shared.client.ClientVersionUtil;
 import io.github.nosequel.tab.shared.skin.SkinType;
 import io.netty.channel.ChannelDuplexHandler;
 import io.netty.channel.ChannelHandlerContext;
+import io.netty.channel.ChannelPipeline;
 import io.netty.channel.ChannelPromise;
 import net.minecraft.server.v1_8_R1.*;
 import org.bukkit.Bukkit;
@@ -225,52 +226,64 @@ public class v1_8_R1TabAdapter extends TabAdapter {
     @Override
     public TabAdapter showRealPlayers(Player player) {
         if (!this.initialized.contains(player)) {
-            // don't really know what to do here as
-            // network manager's i field is a private field.
+            final PlayerConnection connection = this.getPlayerConnection(player);
+            final NetworkManager networkManager = connection.networkManager;
 
-            // reflection would work but cba to do rn
+            try {
+                final Field outgoingQueueField = networkManager.getClass().getDeclaredField("k");
+                outgoingQueueField.setAccessible(true);
 
-//            final ChannelPipeline pipeline = this.getPlayerConnection(player).networkManager.i();
-//
-//            pipeline.addBefore(
-//                    "packet_handler",
-//                    player.getName(),
-//                    this.createShowListener(player)
-//            );
+                ((Queue<?>) outgoingQueueField.get(networkManager)).removeIf(object -> {
+                    if (object != null) {
+                        if (object instanceof PacketPlayOutNamedEntitySpawn) {
+                            this.handlePacketPlayOutNamedEntitySpawn(player, (PacketPlayOutNamedEntitySpawn) object);
+                            return true;
+                        } else if (object instanceof PacketPlayOutRespawn) {
+                            this.handlePacketPlayOutRespawn(player);
+                            return true;
+                        }
+                    }
+
+                    return false;
+                });
+            } catch (NoSuchFieldException | IllegalAccessException e) {
+                e.printStackTrace();
+            }
         }
 
         return this;
     }
 
     /**
-     * Create the listener required to show the players
+     * Handle an {@link PacketPlayOutNamedEntitySpawn} packet
      *
-     * @param player the player to create it for
-     * @return the handler
+     * @param player the player to handle it for
+     * @param packet the packet to handle
      */
-    private ChannelDuplexHandler createShowListener(Player player) {
-        return new ChannelDuplexHandler() {
-            @Override
-            public void write(ChannelHandlerContext context, Object packet, ChannelPromise promise) throws Exception {
-                if (packet instanceof PacketPlayOutNamedEntitySpawn) {
-                    final PacketPlayOutNamedEntitySpawn entitySpawn = (PacketPlayOutNamedEntitySpawn) packet;
-                    final Field uuidField = entitySpawn.getClass().getDeclaredField("b");
+    private void handlePacketPlayOutNamedEntitySpawn(Player player, PacketPlayOutNamedEntitySpawn packet) {
+        try {
+            final Field gameProfileField = packet.getClass().getDeclaredField("b");
+            gameProfileField.setAccessible(true);
 
-                    uuidField.setAccessible(true);
+            final Player target = Bukkit.getPlayer(((GameProfile) gameProfileField.get(packet)).getId());
 
-                    final Player target = Bukkit.getPlayer((UUID) uuidField.get(entitySpawn));
-
-                    if (target != null) {
-                        showPlayer(player, target);
-                    }
-                } else if (packet instanceof PacketPlayOutRespawn) {
-                    showPlayer(player, player);
-                }
-
-                super.write(context, packet, promise);
+            if (target != null) {
+                this.showPlayer(player, target);
             }
-        };
+        } catch (NoSuchFieldException | IllegalAccessException e) {
+            e.printStackTrace();
+        }
     }
+
+    /**
+     * Handle an {@link PacketPlayOutRespawn} packet
+     *
+     * @param player the player to handle it for
+     */
+    private void handlePacketPlayOutRespawn(Player player) {
+        this.showPlayer(player, player);
+    }
+
 
     /**
      * Show a real player to a player
