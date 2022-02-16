@@ -24,7 +24,7 @@ public class TabEntry {
      * @param text the text to display on the slot
      */
     public TabEntry(int x, int y, String text) {
-        this(x, y, text, -1, SkinType.DARK_GRAY.getSkinData());
+        this(x, y, text, 0, SkinType.DARK_GRAY.getSkinData());
     }
 
     /**
