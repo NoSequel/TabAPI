@@ -138,7 +138,11 @@ public class v1_7_R4TabAdapter extends TabAdapter {
         final EntityPlayer entityPlayer = this.getEntityPlayer(profile);
 
         entityPlayer.ping = ping;
-        entityPlayer.listName = text;
+        
+        if (this.getMaxElements(player) > 60) {
+            entityPlayer.listName = text;
+            this.sendPacket(player, PacketPlayOutPlayerInfo.updateDisplayName(entityPlayer));
+        }
 
         this.setupScoreboard(player, text, profile.getName());
         this.sendPacket(player, PacketPlayOutPlayerInfo.updatePing(entityPlayer));
