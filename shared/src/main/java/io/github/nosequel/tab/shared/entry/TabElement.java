@@ -26,7 +26,7 @@ public class TabElement {
     public TabEntry getEntry(int x, int y) {
         return this.entries.stream()
                 .filter(entry -> entry.getX() == x && entry.getY() == y)
-                .findFirst().orElseGet(() -> new TabEntry(x, y, "", -1));
+                .findFirst().orElseGet(() -> new TabEntry(x, y, "", 0));
     }
 
     /**
